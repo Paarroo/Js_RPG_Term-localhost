@@ -36,7 +36,7 @@ class UIManager {
       Berzerker: '🪓',
       Assassin: '🗡️',
       Wizard: '🔮',
-      Healer: '❤️'
+      Valkyrie: '🚁'
     };
     
     return icons[className] || '❓';

@@ -1,9 +1,6 @@
-const Character = require('./character');
-const { ABILITY_COSTS, MESSAGES } = require('./gameConfig');
-
+// Fighter class - Web Browser Version
 class Fighter extends Character {
   constructor(name) {
-    // Auto-configuration from gameConfig
     super(name);
 
     // Fighter-specific property for Dark Vision effect
@@ -58,5 +55,3 @@ class Fighter extends Character {
     }
   }
 }
-
-module.exports = Fighter;

@@ -1,13 +1,10 @@
-const Character = require('./character');
-const { ABILITY_COSTS, MESSAGES } = require('./gameConfig');
-
+// Paladin class - Web Browser Version
 class Paladin extends Character {
   constructor(name) {
-    // Auto-configuration from gameConfig
     super(name);
   }
 
-  // Healing Lightning special attack according to specs
+  // Healing Lightning special attack
   healingLightning(target) {
     const { name } = this;
     const manaCost = ABILITY_COSTS.healingLightning;
@@ -22,12 +19,9 @@ class Paladin extends Character {
     // Effect 1: "inflicting 4 damage"
     this.attack(target, 4);
 
-    // Effect 2: "healing him for 5"
+    // Effect 2: "healing himself for 5 HP"
     this.heal(5);
 
     return true;
   }
-
 }
-
-module.exports = Paladin;

@@ -1,0 +1,41 @@
+// === RPG Battle Arena Main Stylesheet ===
+
+@import 'variables';
+@import 'mixins';
+@import 'base';
+@import 'components';
+@import 'animations';
+
+// Responsive adjustments
+@include media-query(tablet) {
+  .character-selection {
+    @include grid-responsive(200px);
+  }
+
+  .game-modes {
+    justify-content: center;
+  }
+
+  .players-grid {
+    @include grid-responsive(150px);
+  }
+
+  .actions {
+    justify-content: center;
+  }
+}
+
+@include media-query(mobile) {
+  .container {
+    padding: $small-spacing;
+  }
+
+  .game-setup,
+  .game-arena {
+    padding: $base-spacing;
+  }
+
+  .rpg-title {
+    font-size: $font-size-xl;
+  }
+}

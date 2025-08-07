@@ -1,0 +1,59 @@
+// === RPG Battle Arena Variables ===
+
+// Colors
+$primary-dark: #000000;
+$secondary-dark: #1a1a1a;
+$purple-dark: #2d1b69;
+$red-dark: #8B0000;
+$gold: #FFD700;
+$orange: #FF6B35;
+$purple-light: #a55eea;
+$purple-medium: #4834d4;
+$green: #2ed573;
+
+// Gradients
+$gradient-main: linear-gradient(135deg, $primary-dark 0%, $secondary-dark 25%, $purple-dark 50%, $red-dark 75%, $primary-dark 100%);
+$gradient-card: linear-gradient(135deg, rgba($purple-dark, 0.8) 0%, rgba($red-dark, 0.6) 100%);
+$gradient-gold: linear-gradient(135deg, $red-dark, $orange, $gold);
+$gradient-health: linear-gradient(90deg, $red-dark, $orange, $gold);
+$gradient-mana: linear-gradient(90deg, $purple-dark, $purple-medium, $purple-light);
+
+// Spacing
+$base-spacing: 1rem;
+$small-spacing: $base-spacing * 0.5;
+$medium-spacing: $base-spacing * 1.5;
+$large-spacing: $base-spacing * 2;
+$xl-spacing: $base-spacing * 3;
+
+// Border radius
+$border-radius-sm: 8px;
+$border-radius-md: 12px;
+$border-radius-lg: 15px;
+
+// Shadows
+$shadow-light: 0 2px 8px rgba($primary-dark, 0.3);
+$shadow-medium: 0 4px 15px rgba($primary-dark, 0.5);
+$shadow-heavy: 0 8px 25px rgba($primary-dark, 0.6);
+$shadow-glow-gold: 0 0 20px rgba($gold, 0.4);
+$shadow-glow-red: 0 0 15px rgba($red-dark, 0.5);
+
+// Typography
+$font-family-primary: 'Courier New', monospace;
+$font-size-xs: 0.8rem;
+$font-size-sm: 0.9rem;
+$font-size-base: 1rem;
+$font-size-lg: 1.2rem;
+$font-size-xl: 1.5rem;
+$font-size-2xl: 2rem;
+$font-size-3xl: 2.5rem;
+
+// Transitions
+$transition-fast: 0.2s ease;
+$transition-medium: 0.3s ease;
+$transition-slow: 0.5s ease;
+
+// Breakpoints
+$breakpoint-mobile: 480px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+$breakpoint-xl: 1200px;

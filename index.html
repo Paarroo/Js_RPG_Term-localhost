@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎮 RPG Battle Arena</title>
+    <link rel="stylesheet" href="stylsheet/application.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 style="text-align: center;">🎮 RPG Battle Arena ⚔️</h1>
+
+      <!-- Game Setup Phase -->
+      <div id="game-setup" class="game-setup">
+        <h2>🎯 Choose Your Champion</h2>
+        <p style="text-align: center; margin-bottom: 30px; opacity: 0.8">
+          Select the character you will control. AI will manage the other fighters.
+        </p>
+
+        <div id="character-selection" class="character-selection">
+          <!-- Characters will be populated by JavaScript -->
+        </div>
+
+        <div class="game-modes">
+          <button class="mode-btn active" data-mode="default">Classic Mode</button>
+          <button class="mode-btn" data-mode="random">Random Team</button>
+          <button class="mode-btn" data-mode="balanced">Balanced Team</button>
+          <button class="mode-btn" data-mode="enhanced">Enhanced Interface</button>
+        </div>
+
+        <button id="start-game" class="start-btn" disabled>🚀 Start the Fight!</button>
+      </div>
+
+      <!-- Game Arena Phase -->
+      <div id="game-arena" class="game-arena">
+        <div class="turn-info">
+          <span id="turn-counter">Turn 1</span> |
+          <span id="turns-left">9 turns left</span>
+        </div>
+
+        <div id="players-grid" class="players-grid">
+          <!-- Players will be populated by JavaScript -->
+        </div>
+
+        <div id="actions" class="actions hidden">
+          <button class="action-btn" data-action="normal">⚔️ Normal Attack</button>
+          <button class="action-btn" data-action="special">✨ Special Attack</button>
+          <button class="action-btn" data-action="stats">📊 View Statistics</button>
+        </div>
+
+        <div class="game-log" id="game-log">
+          <div class="log-entry">🎮 Welcome to the arena! Battle begins...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Configuration -->
+    <script src="web/gameConfig.js"></script>
+    
+    <!-- Character Classes -->
+    <script src="web/character.js"></script>
+    <script src="web/fighter.js"></script>
+    <script src="web/paladin.js"></script>
+    <script src="web/monk.js"></script>
+    <script src="web/berzerker.js"></script>
+    <script src="web/assassin.js"></script>
+    <script src="web/wizard.js"></script>
+    <script src="web/valkyrie.js"></script>
+    <script src="webGame.js"></script>
+
+    <script>
+      // Initialize the web game when page loads
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("🔧 DOM loaded, initializing game...");
+        
+        // Check if classes are loaded
+        if (typeof CHARACTER_STATS === 'undefined') {
+          console.error("❌ CHARACTER_STATS not loaded!");
+          return;
+        }
+        if (typeof WebGame === 'undefined') {
+          console.error("❌ WebGame class not loaded!");
+          return;
+        }
+        
+        console.log("✅ All classes loaded, creating game instance");
+        const webGame = new WebGame();
+        webGame.initialize();
+        console.log("✅ Game initialized");
+      });
+    </script>
+  </body>
+</html>

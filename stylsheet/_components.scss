@@ -1,0 +1,334 @@
+// === RPG Battle Arena Components ===
+
+.rpg-title {
+  text-align: center;
+  font-size: $font-size-3xl;
+  margin-bottom: $xl-spacing;
+  background: $gradient-gold;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  @include text-glow($gold);
+  @include pulse-animation();
+
+  @include media-query(tablet) {
+    font-size: $font-size-2xl;
+  }
+}
+
+.game-setup {
+  @include card-base;
+  background: linear-gradient(135deg,
+    rgba($red-dark, 0.4) 0%,
+    rgba($purple-dark, 0.3) 50%,
+    rgba($primary-dark, 0.5) 100%);
+  padding: $xl-spacing;
+  margin-bottom: $xl-spacing;
+
+  h2 {
+    @include flex-center;
+    font-size: $font-size-xl;
+    margin-bottom: $base-spacing;
+    @include text-glow($gold);
+  }
+
+  p {
+    text-align: center;
+    margin-bottom: $xl-spacing;
+    opacity: 0.9;
+    font-size: $font-size-base;
+  }
+}
+
+.character-selection {
+  @include grid-responsive(280px);
+  gap: $medium-spacing;
+  margin-bottom: $xl-spacing;
+}
+
+.character-card {
+  @include card-base;
+  @include shine-effect;
+  background: $gradient-card;
+  padding: $medium-spacing;
+  text-align: center;
+  cursor: pointer;
+
+  &:hover {
+    background: linear-gradient(135deg, rgba($red-dark, 0.7) 0%, rgba($purple-dark, 0.5) 100%);
+    transform: translateY(-5px) scale(1.02);
+    border-color: rgba($gold, 0.8);
+    box-shadow: $shadow-heavy, $shadow-glow-gold;
+  }
+
+  &--selected {
+    border-color: $gold;
+    background: linear-gradient(135deg, rgba($gold, 0.3) 0%, rgba($red-dark, 0.5) 100%);
+    box-shadow: $shadow-glow-gold, inset 0 1px 0 rgba($gold, 0.3);
+
+    .character-card__icon {
+      transform: scale(1.1);
+    }
+  }
+
+  &__icon {
+    font-size: 3rem;
+    margin-bottom: $small-spacing;
+    transition: transform $transition-medium;
+  }
+
+  &__name {
+    font-size: $font-size-lg;
+    font-weight: bold;
+    margin-bottom: $small-spacing;
+  }
+
+  &__class {
+    color: $gold;
+    margin-bottom: $small-spacing;
+    @include text-glow($gold);
+    font-weight: bold;
+  }
+
+  &__stats {
+    font-size: $font-size-sm;
+    line-height: 1.4;
+  }
+
+  &__special {
+    font-size: $font-size-xs;
+    color: $orange;
+    margin-top: $small-spacing;
+    font-style: italic;
+    @include text-glow($orange);
+  }
+}
+
+.game-modes {
+  @include flex-center;
+  gap: $base-spacing;
+  margin-bottom: $base-spacing;
+  flex-wrap: wrap;
+}
+
+.mode-btn {
+  @include button-base;
+  padding: $small-spacing $base-spacing;
+  background: $gradient-card;
+  border: 2px solid rgba($gold, 0.3);
+  color: white;
+  @include text-glow(rgba($primary-dark, 0.8));
+
+  &:hover,
+  &--active {
+    background: linear-gradient(135deg, rgba($gold, 0.5), rgba($orange, 0.4));
+    border-color: $gold;
+    transform: translateY(-2px);
+    box-shadow: $shadow-glow-gold;
+  }
+}
+
+.start-btn {
+  @include button-base;
+  @include shine-effect;
+  width: 100%;
+  padding: $base-spacing;
+  font-size: $font-size-lg;
+  background: $gradient-gold;
+  border: 2px solid rgba($gold, 0.6);
+  color: white;
+  border-radius: $border-radius-sm;
+  margin-top: $base-spacing;
+  @include text-glow(rgba($primary-dark, 0.8));
+
+  &:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: $shadow-heavy, $shadow-glow-gold;
+    border-color: $gold;
+  }
+
+  &:disabled {
+    background: linear-gradient(135deg, #333, #666);
+    border-color: #555;
+  }
+}
+
+.game-arena {
+  display: none;
+  @include card-base;
+  background: linear-gradient(135deg,
+    rgba($red-dark, 0.3) 0%,
+    rgba($primary-dark, 0.6) 50%,
+    rgba($purple-dark, 0.4) 100%);
+  padding: $xl-spacing;
+
+  &--active {
+    display: block;
+  }
+}
+
+.turn-info {
+  text-align: center;
+  font-size: $font-size-lg;
+  margin-bottom: $base-spacing;
+  padding: $base-spacing;
+  background: linear-gradient(135deg, rgba($gold, 0.3), rgba($red-dark, 0.4));
+  border-radius: $border-radius-sm;
+  border: 2px solid rgba($gold, 0.5);
+  @include text-glow(rgba($primary-dark, 0.8));
+  font-weight: bold;
+}
+
+.players-grid {
+  @include grid-responsive(220px);
+  margin-bottom: $xl-spacing;
+}
+
+.player-card {
+  @include card-base;
+  background: $gradient-card;
+  padding: $base-spacing;
+  text-align: center;
+  transition: all $transition-medium;
+
+  &--current-turn {
+    border-color: $gold;
+    background: linear-gradient(135deg, rgba($gold, 0.4) 0%, rgba($red-dark, 0.5) 100%);
+    box-shadow: $shadow-glow-gold, $shadow-heavy;
+    transform: scale(1.05);
+  }
+
+  &--dead {
+    background: linear-gradient(135deg, rgba($red-dark, 0.7) 0%, rgba($primary-dark, 0.9) 100%);
+    opacity: 0.5;
+    border-color: rgba($red-dark, 0.8);
+    filter: grayscale(100%);
+  }
+}
+
+.health-bar,
+.mana-bar {
+  width: 100%;
+  height: 20px;
+  background: rgba($primary-dark, 0.8);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 5px 0;
+  border: 2px solid rgba($gold, 0.4);
+  box-shadow: inset 0 2px 4px rgba($primary-dark, 0.6);
+}
+
+.health-fill {
+  height: 100%;
+  background: $gradient-health;
+  transition: width $transition-slow;
+  box-shadow: $shadow-glow-red;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 30%, rgba(white, 0.3) 50%, transparent 70%);
+    animation: shimmer 2s infinite;
+  }
+}
+
+.mana-fill {
+  height: 100%;
+  background: $gradient-mana;
+  transition: width $transition-slow;
+  box-shadow: 0 0 10px rgba($purple-medium, 0.5);
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 30%, rgba(white, 0.3) 50%, transparent 70%);
+    animation: shimmer 2s infinite 1s;
+  }
+}
+
+.actions {
+  @include flex-center;
+  gap: $small-spacing;
+  margin-top: $base-spacing;
+  flex-wrap: wrap;
+
+  &--hidden {
+    display: none;
+  }
+}
+
+.action-btn {
+  @include button-base;
+  @include shine-effect;
+  padding: $base-spacing $medium-spacing;
+  background: $gradient-card;
+  border: 2px solid rgba($gold, 0.4);
+  color: white;
+  @include text-glow(rgba($primary-dark, 0.8));
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba($orange, 0.8), rgba($gold, 0.6));
+    border-color: $gold;
+    transform: translateY(-2px);
+    box-shadow: $shadow-glow-gold;
+  }
+
+  &:disabled {
+    background: linear-gradient(135deg, rgba(100, 100, 100, 0.6), rgba(50, 50, 50, 0.8));
+    border-color: rgba(100, 100, 100, 0.5);
+  }
+}
+
+.game-log {
+  height: 200px;
+  background: linear-gradient(135deg, rgba($primary-dark, 0.9), rgba($purple-dark, 0.4));
+  border-radius: $border-radius-md;
+  padding: $base-spacing;
+  overflow-y: auto;
+  font-size: $font-size-sm;
+  line-height: 1.4;
+  margin-top: $base-spacing;
+  border: 2px solid rgba($gold, 0.3);
+  box-shadow: inset 0 2px 4px rgba($primary-dark, 0.7);
+
+  .log-entry {
+    margin-bottom: 5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    transition: all $transition-medium;
+
+    &--ai {
+      color: $purple-light;
+      @include text-glow($purple-light);
+      background: rgba($purple-dark, 0.3);
+    }
+
+    &--player {
+      color: $gold;
+      @include text-glow($gold);
+      background: rgba($gold, 0.15);
+    }
+
+    &--damage {
+      color: $orange;
+      @include text-glow($orange);
+      background: rgba($red-dark, 0.3);
+    }
+
+    &--heal {
+      color: $green;
+      @include text-glow($green);
+      background: rgba($green, 0.15);
+    }
+  }
+}

@@ -1,0 +1,57 @@
+// === RPG Battle Arena Base Styles ===
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-family-primary;
+  background: $gradient-main;
+  color: white;
+  min-height: 100vh;
+  padding: $base-spacing;
+  position: relative;
+  overflow-x: hidden;
+  line-height: 1.6;
+
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(circle at 20% 50%, rgba($red-dark, 0.4) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba($purple-dark, 0.5) 0%, transparent 50%),
+      radial-gradient(circle at 40% 80%, rgba($gold, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
+.container {
+  max-width: $breakpoint-xl;
+  margin: 0 auto;
+}
+
+.hidden {
+  display: none;
+}
+
+// Scrollbar styling
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba($primary-dark, 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $gradient-gold;
+  border-radius: 4px;
+}

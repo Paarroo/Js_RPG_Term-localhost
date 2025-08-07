@@ -1,11 +1,10 @@
-const { CHARACTER_STATS, MESSAGES } = require('./gameConfig');
+const { CHARACTER_STATS, MESSAGES } = require('../gameConfig');
 
 class Character {
   constructor(name, hp = null, dmg = null, mana = null, maxHp = null) {
-    // Auto-configuration: use stats from gameConfig if not provided
     const className = this.constructor.name;
     const stats = CHARACTER_STATS[className];
-    
+
     this.name = name;
     this.hp = hp !== null ? hp : (stats ? stats.hp : 10); // Fallback to 10 if no stats
     this.dmg = dmg !== null ? dmg : (stats ? stats.dmg : 1);
@@ -13,6 +12,7 @@ class Character {
     this.maxHp = maxHp || this.hp; // Intelligent maxHp: use provided or default to hp
 
     this.status = "playing"; // By default
+    this.isPlayerControlled = false; // By default, controlled by AI
   }
 
   // takeDamage method (damage as parameter)

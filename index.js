@@ -1,5 +1,5 @@
 // Main entry point for the RPG game
-const Game = require('./game');
+const Game = require('./game/game');
 
 // Example usage - you can customize the game setup here
 
