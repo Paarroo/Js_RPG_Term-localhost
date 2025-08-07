@@ -1,4 +1,3 @@
-// Web-based RPG Game Controller
 class WebGame {
     constructor() {
         this.players = [];
@@ -19,7 +18,7 @@ class WebGame {
         // Prevent multiple initializations
         if (this.initialized) return;
         this.initialized = true;
-        
+
         this.setupEventListeners();
         this.populateCharacterSelection();
     }
@@ -30,8 +29,8 @@ class WebGame {
         const startBtn = document.getElementById('start-game');
         const actions = document.getElementById('actions');
         const playersGrid = document.getElementById('players-grid');
-        
-        // Character selection  
+
+        // Character selection
         characterSelection.addEventListener('click', (e) => {
             if (e.target.closest('.character-card')) {
                 console.log('🔧 Character card clicked');
@@ -98,7 +97,7 @@ class WebGame {
             case 'balanced':
                 characters = [
                     allCharacters[0], // Fighter
-                    allCharacters[1], // Paladin  
+                    allCharacters[1], // Paladin
                     allCharacters[2], // Monk
                     allCharacters[4], // Assassin
                     allCharacters[5]  // Wizard
@@ -130,17 +129,17 @@ class WebGame {
     selectCharacter(card) {
         // Prevent multiple selections during game
         if (this.gamePhase !== 'setup') return;
-        
+
         // Remove previous selection
         document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
-        
+
         // Select new character
         card.classList.add('selected');
         this.selectedCharacter = parseInt(card.dataset.index);
-        
+
         // Enable start button
         document.getElementById('start-game').disabled = false;
-        
+
         this.log(`You chose ${card.querySelector('.character-name').textContent}!`);
     }
 
@@ -156,17 +155,17 @@ class WebGame {
 
         // Initialize players based on game mode
         this.initializePlayers();
-        
+
         console.log(`🔧 DEBUG: selectedCharacter index: ${this.selectedCharacter}, players length: ${this.players.length}`);
         console.log(`🔧 DEBUG: players array:`, this.players.map(p => `${p.name} (${p.constructor.name})`));
-        
+
         // Ensure selected character index is valid
         if (this.selectedCharacter >= this.players.length) {
             console.error(`❌ Selected character index ${this.selectedCharacter} is out of bounds!`);
             this.log(`❌ Erreur de sélection de personnage !`);
             return;
         }
-        
+
         // Set player control
         const selectedPlayer = this.players[this.selectedCharacter];
         if (!selectedPlayer) {
@@ -174,23 +173,23 @@ class WebGame {
             this.log(`❌ Personnage introuvable !`);
             return;
         }
-        
+
         selectedPlayer.isPlayerControlled = true;
-        
+
         this.log(`🎮 Battle begins! You control ${selectedPlayer.name}.`);
         this.log(`🤖 AI controls other characters.`);
-        
+
         // Start game loop
         this.updateDisplay();
         this.gamePhase = 'battle';
-        
+
         setTimeout(() => this.nextTurn(), 1000);
     }
 
     initializePlayers() {
         const allCharacters = [
             { name: 'Grace', class: 'Fighter' },
-            { name: 'Ulder', class: 'Paladin' }, 
+            { name: 'Ulder', class: 'Paladin' },
             { name: 'Moana', class: 'Monk' },
             { name: 'Draven', class: 'Berzerker' },
             { name: 'Carl', class: 'Assassin' },
@@ -199,7 +198,7 @@ class WebGame {
         ];
 
         let selectedCharacters;
-        
+
         switch(this.gameMode) {
             case 'default':
                 selectedCharacters = allCharacters.slice(0, 5); // First 5 characters
@@ -211,7 +210,7 @@ class WebGame {
                 // One of each class type (balanced team)
                 selectedCharacters = [
                     allCharacters[0], // Fighter
-                    allCharacters[1], // Paladin  
+                    allCharacters[1], // Paladin
                     allCharacters[2], // Monk
                     allCharacters[4], // Assassin
                     allCharacters[5]  // Wizard
@@ -225,10 +224,10 @@ class WebGame {
         }
 
         // Create players based on selected characters
-        this.players = selectedCharacters.map(char => 
+        this.players = selectedCharacters.map(char =>
             this.createCharacterByClass(char.name, char.class)
         ).filter(player => player !== null);
-        
+
         console.log(`🔧 Created ${this.players.length} players total for ${this.gameMode} mode`);
     }
 
@@ -242,14 +241,14 @@ class WebGame {
             Wizard: () => new Wizard(name),
             Valkyrie: () => new Valkyrie(name)
         };
-        
+
         console.log(`🔧 Creating character: ${name} as ${className}`);
-        
+
         if (!classMap[className]) {
             console.error(`❌ Unknown character class: ${className}`);
             return null;
         }
-        
+
         try {
             const character = classMap[className]();
             console.log(`✅ Created ${name}: HP=${character.hp}, DMG=${character.dmg}, Mana=${character.mana}`);
@@ -273,7 +272,7 @@ class WebGame {
     updatePlayersGrid() {
         const container = document.getElementById('players-grid');
         const icons = {
-            Fighter: '⚔️', Paladin: '🛡️', Monk: '☯️', Berzerker: '🪓', 
+            Fighter: '⚔️', Paladin: '🛡️', Monk: '☯️', Berzerker: '🪓',
             Assassin: '🗡️', Wizard: '🔮', Valkyrie: '🚁'
         };
 
@@ -283,7 +282,7 @@ class WebGame {
             const isCurrentTurn = this.currentPlayer === player;
             const isDead = player.isDead();
             const isPlayerControlled = player.isPlayerControlled;
-            
+
             const healthPercent = (player.hp / player.maxHp) * 100;
             const manaPercent = player.maxMana ? (player.mana / player.maxMana) * 100 : 0;
 
@@ -298,19 +297,19 @@ class WebGame {
                         ${player.name} ${isPlayerControlled ? '(You)' : '(AI)'}
                     </div>
                     <div class="character-class">${className}</div>
-                    
+
                     <div class="health-bar">
                         <div class="health-fill" style="width: ${healthPercent}%"></div>
                     </div>
                     <div style="font-size: 0.8rem;">HP: ${player.hp}/${player.maxHp}</div>
-                    
+
                     ${player.maxMana ? `
                         <div class="mana-bar">
                             <div class="mana-fill" style="width: ${manaPercent}%"></div>
                         </div>
                         <div style="font-size: 0.8rem;">Mana: ${player.mana}/${player.maxMana}</div>
                     ` : ''}
-                    
+
                     <div style="font-size: 0.8rem; margin-top: 5px;">
                         DMG: ${player.dmg} | Status: ${player.status}
                     </div>
@@ -321,15 +320,15 @@ class WebGame {
 
     async nextTurn() {
         if (this.gamePhase !== 'battle') return;
-        
+
         const alivePlayers = this.players.filter(p => !p.isDead());
-        
+
         // Check win conditions
         if (alivePlayers.length <= 1) {
             this.endGame();
             return;
         }
-        
+
         if (this.turnLeft <= 0) {
             this.endGame();
             return;
@@ -337,19 +336,19 @@ class WebGame {
 
         // Shuffle alive players for random turn order
         const shuffledPlayers = this.shuffleArray([...alivePlayers]);
-        
+
         for (const player of shuffledPlayers) {
             if (player.isDead()) continue;
-            
+
             this.currentPlayer = player;
             this.updateDisplay();
-            
+
             if (player.isPlayerControlled) {
                 await this.playerTurn(player);
             } else {
                 await this.aiTurn(player);
             }
-            
+
             // Check if game should end
             const stillAlive = this.players.filter(p => !p.isDead());
             if (stillAlive.length <= 1) {
@@ -357,23 +356,23 @@ class WebGame {
                 return;
             }
         }
-        
+
         // End turn
         this.currentTurn++;
         this.turnLeft--;
         this.currentPlayer = null;
         this.updateDisplay();
-        
+
         setTimeout(() => this.nextTurn(), 1500);
     }
 
     async playerTurn(player) {
         this.isPlayerTurn = true;
         this.log(`🎮 Your turn with ${player.name}!`);
-        
+
         // Show action buttons
         document.getElementById('actions').classList.remove('hidden');
-        
+
         // Wait for player action
         return new Promise((resolve) => {
             this.playerTurnResolve = resolve;
@@ -382,19 +381,19 @@ class WebGame {
 
     handleAction(action) {
         console.log(`🔧 DEBUG: handleAction called with "${action}", isPlayerTurn: ${this.isPlayerTurn}, currentPlayer: ${this.currentPlayer?.name}`);
-        
+
         if (!this.isPlayerTurn) {
             console.log(`🚫 Not player turn, ignoring action`);
             return;
         }
-        
+
         const player = this.currentPlayer;
-        
+
         if (action === 'stats') {
             this.showStats();
             return;
         }
-        
+
         if (action === 'normal') {
             this.pendingAction = 'normal';
             this.startTargetSelection();
@@ -410,19 +409,19 @@ class WebGame {
 
     needsTarget(player, actionType) {
         if (actionType === 'normal') return true;
-        
+
         const className = player.constructor.name;
         return !(['Monk', 'Berzerker'].includes(className));
     }
 
     startTargetSelection() {
         this.targetSelection = true;
-        this.availableTargets = this.players.filter(p => 
+        this.availableTargets = this.players.filter(p =>
             !p.isDead() && p !== this.currentPlayer
         );
-        
+
         this.log('🎯 Select a target by clicking on their card...');
-        
+
         // Highlight available targets
         document.querySelectorAll('.player-card').forEach((card, index) => {
             if (this.availableTargets.includes(this.players[index])) {
@@ -434,39 +433,39 @@ class WebGame {
 
     selectTarget(card) {
         if (!this.targetSelection) return;
-        
+
         const index = parseInt(card.dataset.index);
         const target = this.players[index];
-        
+
         if (!this.availableTargets.includes(target)) return;
-        
+
         // Clear target selection
         this.targetSelection = false;
         document.querySelectorAll('.player-card').forEach(c => {
             c.style.border = '';
             c.style.cursor = '';
         });
-        
+
         this.executeAction(this.pendingAction, target);
     }
 
     executeAction(actionType, target) {
         const player = this.currentPlayer;
-        
+
         if (actionType === 'normal') {
             player.dealDamage(target);
             this.log(`⚔️ ${player.name} attacks ${target.name}!`);
         } else if (actionType === 'special') {
             this.executeSpecialAttack(player, target);
         }
-        
+
         this.endPlayerTurn();
     }
 
     executeSpecialAttack(player, target) {
         const className = player.constructor.name;
         let success = false;
-        
+
         if (className === 'Fighter' && target) {
             success = player.darkVision(target);
         } else if (className === 'Paladin' && target) {
@@ -482,7 +481,7 @@ class WebGame {
         } else if (className === 'Valkyrie' && target) {
             success = player.missileSwarm(target);
         }
-        
+
         if (!success) {
             this.log(`❌ ${player.name} cannot use this special attack!`);
             // Fallback to normal attack if target available
@@ -496,7 +495,7 @@ class WebGame {
     endPlayerTurn() {
         this.isPlayerTurn = false;
         document.getElementById('actions').classList.add('hidden');
-        
+
         if (this.playerTurnResolve) {
             this.playerTurnResolve();
             this.playerTurnResolve = null;
@@ -505,16 +504,16 @@ class WebGame {
 
     async aiTurn(player) {
         this.log(`🤖 ${player.name} (AI) is thinking...`);
-        
+
         // Wait for dramatic effect
         await new Promise(resolve => setTimeout(resolve, 1500));
-        
+
         const targets = this.players.filter(p => !p.isDead() && p !== player);
         if (targets.length === 0) return;
-        
+
         // AI decision logic (simplified version)
         const decision = this.makeAIDecision(player, targets);
-        
+
         if (decision.type === 'special') {
             this.log(`🤖 ${player.name} uses special attack!`);
             this.executeSpecialAttack(player, decision.target);
@@ -522,7 +521,7 @@ class WebGame {
             this.log(`🤖 ${player.name} attacks ${decision.target.name}!`);
             player.dealDamage(decision.target);
         }
-        
+
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
@@ -533,11 +532,11 @@ class WebGame {
                 return { type: 'normal', target: target };
             }
         }
-        
+
         // Random attack
         const target = targets[Math.floor(Math.random() * targets.length)];
         const useSpecial = Math.random() > 0.4 && this.canUseSpecial(player);
-        
+
         return {
             type: useSpecial ? 'special' : 'normal',
             target: target
@@ -549,7 +548,7 @@ class WebGame {
             Fighter: 20, Paladin: 40, Monk: 25, Berzerker: 0,
             Assassin: 20, Wizard: 25, Valkyrie: 35
         };
-        
+
         const className = character.constructor.name;
         const cost = costs[className] || 0;
         return character.mana >= cost;
@@ -562,16 +561,16 @@ class WebGame {
             const status = player.isDead() ? '💀 Dead' : '✅ Alive';
             statsText += `${player.name} (${className}): ${player.hp}/${player.maxHp} HP, ${player.mana} mana [${status}]\\n`;
         });
-        
+
         this.log(statsText);
     }
 
     endGame() {
         this.gamePhase = 'ended';
         this.currentPlayer = null;
-        
+
         const alivePlayers = this.players.filter(p => !p.isDead());
-        
+
         if (alivePlayers.length === 1) {
             const winner = alivePlayers[0];
             this.log(`🏆 ${winner.name} wins the battle!`);
@@ -579,7 +578,7 @@ class WebGame {
             // Multiple survivors - highest HP wins
             let maxHp = 0;
             let winners = [];
-            
+
             alivePlayers.forEach(player => {
                 if (player.hp > maxHp) {
                     maxHp = player.hp;
@@ -588,7 +587,7 @@ class WebGame {
                     winners.push(player);
                 }
             });
-            
+
             if (winners.length === 1) {
                 this.log(`🏆 ${winners[0].name} wins with ${maxHp} HP!`);
             } else {
@@ -597,7 +596,7 @@ class WebGame {
         } else {
             this.log(`💀 Everyone is dead! No winner.`);
         }
-        
+
         this.updateDisplay();
         document.getElementById('actions').classList.add('hidden');
     }
@@ -616,13 +615,13 @@ class WebGame {
         const entry = document.createElement('div');
         entry.className = 'log-entry';
         entry.innerHTML = message.replace(/\\n/g, '<br>');
-        
+
         // Add appropriate classes for styling
         if (message.includes('🤖')) entry.classList.add('ai');
         if (message.includes('🎮')) entry.classList.add('player');
         if (message.includes('attaque') || message.includes('damage')) entry.classList.add('damage');
         if (message.includes('soigne') || message.includes('heal')) entry.classList.add('heal');
-        
+
         logContainer.appendChild(entry);
         logContainer.scrollTop = logContainer.scrollHeight;
     }

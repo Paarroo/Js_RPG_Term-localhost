@@ -1,4 +1,4 @@
-const { CHARACTER_STATS, MESSAGES } = require('../gameConfig');
+const { CHARACTER_STATS, MESSAGES } = require('../game/gameConfig');
 
 class Character {
   constructor(name, hp = null, dmg = null, mana = null, maxHp = null) {

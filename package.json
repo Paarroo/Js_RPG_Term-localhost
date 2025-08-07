@@ -1,0 +1,27 @@
+{
+  "name": "js-rpg-battle-arena",
+  "version": "1.0.0",
+  "description": "A turn-based console and web RPG game featuring 7 unique character classes",
+  "main": "index.js",
+  "scripts": {
+    "terminal": "node index.js",
+    "web": "open index.html",
+    "build": "sass assets/styles/application.scss dist/application.css",
+    "build:watch": "sass --watch assets/styles/application.scss dist/application.css",
+    "dev": "npm run build:watch",
+    "start": "npm run terminal"
+  },
+  "keywords": [
+    "rpg",
+    "game",
+    "javascript",
+    "turn-based",
+    "console",
+    "web"
+  ],
+  "author": "THP Student",
+  "license": "MIT",
+  "devDependencies": {
+    "sass": "^1.69.0"
+  }
+}

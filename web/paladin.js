@@ -1,4 +1,3 @@
-// Paladin class - Web Browser Version
 class Paladin extends Character {
   constructor(name) {
     super(name);

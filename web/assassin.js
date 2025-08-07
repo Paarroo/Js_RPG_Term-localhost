@@ -1,4 +1,3 @@
-// Assassin class - Web Browser Version
 class Assassin extends Character {
   constructor(name) {
     super(name);

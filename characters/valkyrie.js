@@ -1,5 +1,5 @@
 const Character = require('./character');
-const { ABILITY_COSTS, MESSAGES } = require('../gameConfig');
+const { ABILITY_COSTS, MESSAGES } = require('../game/gameConfig');
 
 class Valkyrie extends Character {
   constructor(name) {

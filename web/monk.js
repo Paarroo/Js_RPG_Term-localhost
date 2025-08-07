@@ -1,4 +1,3 @@
-// Monk class - Web Browser Version  
 class Monk extends Character {
   constructor(name) {
     super(name);

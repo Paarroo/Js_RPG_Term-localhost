@@ -1,4 +1,3 @@
-// Valkyrie class - Web Browser Version  
 class Valkyrie extends Character {
   constructor(name) {
     super(name);

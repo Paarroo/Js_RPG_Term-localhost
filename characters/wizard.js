@@ -1,12 +1,12 @@
 const Character = require('./character');
-const { ABILITY_COSTS, MESSAGES } = require('../gameConfig');
+const { ABILITY_COSTS, MESSAGES } = require('../game/gameConfig');
 
 class Wizard extends Character {
   constructor(name) {
     super(name);
   }
 
-  // Fireball special attack according to specs
+  // Fireball special attack
   fireball(target) {
     const { name } = this;
     const manaCost = ABILITY_COSTS.fireball;

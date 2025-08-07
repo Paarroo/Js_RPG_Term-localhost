@@ -1,4 +1,3 @@
-// Base Character class - Web Browser Version
 class Character {
   constructor(name, hp = null, dmg = null, mana = null, maxHp = null) {
     const className = this.constructor.name;

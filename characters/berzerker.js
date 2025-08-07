@@ -1,5 +1,5 @@
 const Character = require('./character');
-const { MESSAGES } = require('../gameConfig');
+const { MESSAGES } = require('../game/gameConfig');
 
 class Berzerker extends Character {
   constructor(name) {

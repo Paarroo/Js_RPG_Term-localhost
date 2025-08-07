@@ -1,4 +1,3 @@
-// Berzerker class - Web Browser Version
 class Berzerker extends Character {
   constructor(name) {
     super(name);

@@ -1,4 +1,3 @@
-// Fighter class - Web Browser Version
 class Fighter extends Character {
   constructor(name) {
     super(name);

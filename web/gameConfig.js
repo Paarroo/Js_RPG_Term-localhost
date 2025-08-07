@@ -1,13 +1,12 @@
 // Game Configuration - Web Browser Version
-// Balanced for better gameplay experience
 const CHARACTER_STATS = {
-  Fighter: { hp: 14, dmg: 4, mana: 45 },   // +2 HP, +5 mana (more tankier)
-  Paladin: { hp: 16, dmg: 3, mana: 160 },  // Unchanged (already well balanced)
-  Monk: { hp: 10, dmg: 2, mana: 200 },     // +2 HP (survivability)
-  Berzerker: { hp: 10, dmg: 4, mana: 0 },  // +2 HP (needs more survivability)
-  Assassin: { hp: 8, dmg: 6, mana: 30 },   // +2 HP, +10 mana (glass cannon but not too fragile)
-  Wizard: { hp: 10, dmg: 2, mana: 200 },   // Balanced (high mana, low HP)
-  Valkyrie: { hp: 12, dmg: 3, mana: 150 }  // Mobile attacker (balanced stats, high damage ability)
+  Fighter: { hp: 14, dmg: 4, mana: 45 },
+  Paladin: { hp: 16, dmg: 3, mana: 160 },
+  Monk: { hp: 10, dmg: 2, mana: 200 },
+  Berzerker: { hp: 10, dmg: 4, mana: 0 },
+  Assassin: { hp: 8, dmg: 6, mana: 30 },
+  Wizard: { hp: 10, dmg: 2, mana: 200 },
+  Valkyrie: { hp: 12, dmg: 3, mana: 150 }
 };
 
 const ABILITY_COSTS = {
@@ -41,12 +40,12 @@ const MESSAGES = {
     // Fighter
     damageReduction: (name) => `${name} will take 2 less damage on the next hit!`,
     damageReduced: (name, original, reduced) => `${name} reduces ${original} damage to ${reduced}!`,
-    
-    // Berzerker  
+
+    // Berzerker
     rageAttack: (name, dmg) => `${name} gains +1 permanent attack! (now ${dmg} DMG)`,
     rageDamage: (name, hp) => `${name} loses 1 HP from rage! (${hp} HP left)`,
     rageDeath: (name) => `${name} dies from his own rage!`,
-    
+
     // Assassin
     immunity: (name) => `${name} becomes immune to damage on next turn!`,
     immuneToDamage: (name) => `${name} is immune and takes no damage!`,

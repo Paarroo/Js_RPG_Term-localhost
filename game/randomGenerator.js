@@ -1,12 +1,12 @@
 const { CHARACTER_STATS } = require('./gameConfig');
 
-const Fighter = require('../caracters/fighter');
-const Paladin = require('../caracters/paladin');
-const Monk = require('../caracters/monk');
-const Berzerker = require('../caracters/berzerker');
-const Assassin = require('../caracters/assassin');
-const Wizard = require('../caracters/wizard');
-const Valkyrie = require('../caracters/valkyrie');
+const Fighter = require('../characters/fighter');
+const Paladin = require('../characters/paladin');
+const Monk = require('../characters/monk');
+const Berzerker = require('../characters/berzerker');
+const Assassin = require('../characters/assassin');
+const Wizard = require('../characters/wizard');
+const Valkyrie = require('../characters/valkyrie');
 
 // Random name generator for characters
 class RandomGenerator {

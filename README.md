@@ -1,15 +1,17 @@
 # 🎮 JavaScript RPG Battle Arena
 
-A turn-based console RPG game featuring 7 unique character classes battling to the death in an arena setting.
+A turn-based RPG game featuring 7 unique character classes battling to the death in an arena setting. Available in both **terminal** and **web** versions with identical gameplay mechanics.
 
 ## 🚀 Features
 
-- **7 Character Classes**: Fighter, Paladin, Monk, Berzerker, Assassin, Wizard, Healer
-- **Multiple Game Modes**: Default party, random party, balanced party
-- **Enhanced UI**: Visual health/mana bars with class icons
+- **Dual Platform**: Terminal console and web browser versions
+- **7 Character Classes**: Fighter, Paladin, Monk, Berzerker, Assassin, Wizard, Valkyrie
+- **Multiple Game Modes**: Classic, Random Team, Balanced Team, Enhanced Interface
+- **Enhanced UI**: Visual health/mana bars with class icons (web version)
 - **Strategic Combat**: Each class has unique abilities and playstyles
 - **Turn-based Gameplay**: 10-turn limit with victory conditions
-- **Interactive Controls**: Player-controlled actions for all characters
+- **Interactive Controls**: Player-controlled actions with AI opponents
+- **Mortal Kombat Styling**: Dark theme with gold accents (web version)
 
 ## 📦 Installation
 
@@ -17,9 +19,38 @@ A turn-based console RPG game featuring 7 unique character classes battling to t
 # Clone or download the project
 cd S1_J3-4_JS_RPG
 
-# No dependencies required - pure Node.js
+# Install dependencies (optional - for SCSS compilation)
+npm install
+
+# Run terminal version
+npm run terminal
+# OR
 node index.js
+
+# Open web version
+npm run web
+# OR
+open index.html
+
+# Compile SCSS (if making style changes)
+npm run build
 ```
+
+## 📸 Screenshots
+
+### Web Version
+![Character Selection](assets/screenshots/web-character-selection.png)
+*Mortal Kombat-styled character selection with multiple game modes*
+
+![Battle Arena](assets/screenshots/web-battle-arena.png)
+*Real-time battle interface with visual HP/Mana bars and combat log*
+
+### Terminal Version  
+![Character Selection](assets/screenshots/terminal-character-select.png)
+*Console-based character selection with AI-controlled opponents*
+
+![Terminal Battle](assets/screenshots/terminal-battle.png)
+*Turn-based combat with detailed statistics and AI decision making*
 
 ## 🎯 Character Classes
 
@@ -92,19 +123,54 @@ Visual health/mana bars, class icons, and improved formatting
 
 ### File Structure
 ```
-├── character.js          # Base character class
-├── fighter.js            # Fighter class implementation  
-├── paladin.js            # Paladin class implementation
-├── monk.js               # Monk class implementation
-├── berzerker.js          # Berzerker class implementation
-├── assassin.js           # Assassin class implementation
-├── wizard.js             # Wizard class implementation
-├── valkyrie.js           # Valkyrie class implementation
-├── gameConfig.js         # Centralized game configuration
-├── randomGenerator.js    # Random party generation
-├── uiManager.js          # Enhanced UI components
-├── game.js               # Main game orchestrator
-└── index.js              # Entry point and game modes
+S1_J3-4_JS_RPG/
+├── package.json
+├── .gitignore
+├── README.md
+├── index.html                # Web interface
+├── index.js                  # Terminal entry point
+│
+├── characters/               # Character classes
+│   ├── character.js          # Base class
+│   ├── fighter.js
+│   ├── paladin.js
+│   ├── monk.js
+│   ├── berzerker.js
+│   ├── assassin.js
+│   ├── wizard.js
+│   └── valkyrie.js
+│
+├── game/                     # Terminal game logic
+│   ├── game.js               # Main orchestrator
+│   ├── gameConfig.js
+│   ├── randomGenerator.js
+│   └── uiManager.js
+│
+├── web/                      # Web version
+│   ├── webGame.js
+│   ├── gameConfig.js
+│   └── characters/
+│       ├── character.js
+│       ├── fighter.js
+│       ├── paladin.js
+│       ├── monk.js
+│       ├── berzerker.js
+│       ├── assassin.js
+│       ├── wizard.js
+│       └── valkyrie.js
+│
+├── assets/
+│   └── styles/               # SCSS source
+│       ├── application.scss
+│       ├── _variables.scss
+│       ├── _base.scss
+│       ├── _components.scss
+│       ├── _mixins.scss
+│       └── _animations.scss
+│
+└── dist/                     # Compiled CSS
+    ├── application.css
+    └── application.css.map
 ```
 
 ### Core Design Patterns

@@ -1,4 +1,3 @@
-// Wizard class - Web Browser Version
 class Wizard extends Character {
   constructor(name) {
     super(name);
