@@ -44,52 +44,78 @@ npm run build
 ## 📸 Screenshots
 
 ### Web Version
+
 ![Character Selection](assets/screenshots/web-character-selection.png)
-*Mortal Kombat-styled character selection with multiple game modes*
+_Mortal Kombat-styled character selection with multiple game modes_
 
 ![Battle Arena](assets/screenshots/web-battle-arena.png)
-*Real-time battle interface with visual HP/Mana bars and combat log*
+_Real-time battle interface with visual HP/Mana bars and combat log_
 
-### Terminal Version  
+### Écrans de fin de partie
+
+<table>
+<tr>
+<td align="center">
+<h4>🏆 Victoire</h4>
+<img src="assets/screenshots/victory.png" alt="Écran de victoire" width="350"/>
+<p><em>Modal de victoire avec animations dorées et statistiques détaillées</em></p>
+</td>
+<td align="center">
+<h4>💀 Défaite</h4>
+<img src="assets/screenshots/defeat.png" alt="Écran de défaite" width="350"/>
+<p><em>Modal de défaite avec thème rouge sang</em></p>
+</td>
+</tr>
+</table>
+
+### Terminal Version
+
 ![Character Selection](assets/screenshots/terminal-character-select.png)
-*Console-based character selection with AI-controlled opponents*
+_Console-based character selection with AI-controlled opponents_
 
 ![Terminal Battle](assets/screenshots/terminal-battle.png)
-*Turn-based combat with detailed statistics and AI decision making*
+_Turn-based combat with detailed statistics and AI decision making_
 
 ## 🎯 Character Classes
 
 ### ⚔️ Fighter
+
 - **HP**: 14 | **DMG**: 4 | **Mana**: 45
 - **Special**: Dark Vision (5 DMG + damage reduction shield)
 - **Role**: Balanced attacker with defensive capabilities
 
-### 🛡️ Paladin  
+### 🛡️ Paladin
+
 - **HP**: 16 | **DMG**: 3 | **Mana**: 160
 - **Special**: Healing Lightning (4 DMG + heal 5 HP)
 - **Role**: Tank with healing support
 
 ### ☯️ Monk
+
 - **HP**: 10 | **DMG**: 2 | **Mana**: 200
 - **Special**: Heal (restore 8 HP)
 - **Role**: Support healer with longevity
 
 ### 🪓 Berzerker
+
 - **HP**: 10 | **DMG**: 4 | **Mana**: 0
 - **Special**: Rage (+1 permanent DMG, -1 HP)
 - **Role**: High-risk, high-reward damage dealer
 
 ### 🗡️ Assassin
+
 - **HP**: 8 | **DMG**: 6 | **Mana**: 30
 - **Special**: Shadow Hit (7 DMG + immunity + counter-damage)
 - **Role**: Glass cannon with evasive abilities
 
 ### 🔮 Wizard
+
 - **HP**: 10 | **DMG**: 2 | **Mana**: 200
 - **Special**: Fireball (7 DMG blast)
 - **Role**: Burst damage caster
 
 ### 🚁 Valkyrie
+
 - **HP**: 12 | **DMG**: 3 | **Mana**: 150
 - **Special**: Missile Swarm (8 DMG blast)
 - **Role**: Mobile attacker with highest damage ability
@@ -97,15 +123,19 @@ npm run build
 ## 🎮 Game Modes
 
 ### Default Mode
+
 Original 5 characters: Grace (Fighter), Ulder (Paladin), Moana (Monk), Draven (Berzerker), Carl (Assassin)
 
 ### Random Party Mode
+
 5 randomly generated characters with random names and classes
 
-### Balanced Party Mode  
+### Balanced Party Mode
+
 One character from each available class (7 total)
 
 ### Enhanced UI Mode
+
 Visual health/mana bars, class icons, and improved formatting
 
 ## 🎯 How to Play
@@ -121,12 +151,14 @@ Visual health/mana bars, class icons, and improved formatting
 ## 🏗️ Architecture
 
 ### Key Principles
+
 - **Single Source of Truth**: One `gameConfig.js` for all platforms
 - **Unified Character Classes**: ES6 modules shared between terminal & web
 - **Modern ES6 Modules**: Native import/export for Node.js + browsers
 - **Clean Separation**: Business logic vs UI interfaces
 
 ### File Structure
+
 ```
 S1_J3-4_JS_RPG/
 ├── package.json
@@ -160,6 +192,7 @@ S1_J3-4_JS_RPG/
 ```
 
 ### Design Patterns
+
 - **ES6 Modules**: Universal import/export (Node.js + Browser)
 - **Single Responsibility**: Interfaces handle UI, shared/ handles logic
 - **Factory Pattern**: `RandomGenerator` creates all character types
@@ -168,8 +201,9 @@ S1_J3-4_JS_RPG/
 ## 🔧 Configuration
 
 Edit `src/shared/gameConfig.js` to modify:
+
 - Character stats and balance
-- Ability mana costs  
+- Ability mana costs
 - Game messages and text
 - New abilities and effects
 
@@ -191,18 +225,8 @@ rpgGame.setEnhancedUI(true);
 rpgGame.startGame();
 ```
 
-## 📊 Game Balance
-
-All classes are balanced for competitive gameplay:
-- **Damage Dealers**: High damage, lower survivability
-- **Tanks**: High HP, moderate damage, utility
-- **Support**: Healing abilities, team-focused
-- **Specialists**: Unique mechanics and playstyles
-
-Each class has distinct strengths, weaknesses, and strategic value in team composition.
-
 ---
 
-⚔️  Built with ❤️ and JavaScript
+⚔️ Built with ❤️ and JavaScript
 
 "Where classic RPG meets modern web development" ✨

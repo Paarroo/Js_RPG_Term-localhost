@@ -14,9 +14,15 @@ export class UIManager {
   static displayManaBar(character) {
     const { mana } = character;
     const maxMana = character.maxMana || 200; // Fallback for classes without maxMana
+    
+    // Handle Berzerker (0 max mana)
+    if (maxMana === 0) {
+      return '░'.repeat(10) + ' (0/0)';
+    }
+    
     const barLength = 10;
-    const fillLength = Math.round((mana / maxMana) * barLength);
-    const emptyLength = barLength - fillLength;
+    const fillLength = Math.max(0, Math.min(barLength, Math.round((mana / maxMana) * barLength)));
+    const emptyLength = Math.max(0, barLength - fillLength);
     
     const filledBar = '█'.repeat(fillLength);
     const emptyBar = '░'.repeat(emptyLength);

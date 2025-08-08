@@ -8,7 +8,9 @@
   </head>
   <body>
     <div class="container">
-      <h1 style="text-align: center; margin: 0.5rem 0 1rem 0; font-size: 1.8rem;">🎮 RPG Battle Arena ⚔️</h1>
+      <h1 style="text-align: center; margin: 0.5rem 0 1rem 0; font-size: 1.8rem">
+        🎮 RPG Battle Arena ⚔️
+      </h1>
 
       <!-- Game Setup Phase -->
       <div id="game-setup" class="game-setup">
@@ -35,7 +37,9 @@
       <div id="game-arena" class="game-arena">
         <div class="turn-info">
           <span id="turn-counter">Turn 1</span> |
-          <span id="turns-left">9 turns left</span>
+          <span id="turns-left">9 turns left</span> |
+          <div id="pause-help" style="color: #4CAF50; font-weight: bold;">⌨️ Press Enter to pause</div>
+          <div id="pause-indicator" style="display: none; color: #ff6b35; font-weight: bold;">⏸️ PAUSED - Press Enter to resume</div>
         </div>
 
         <div id="players-grid" class="players-grid">
@@ -45,11 +49,45 @@
         <div id="actions" class="actions hidden">
           <button class="action-btn" data-action="normal">⚔️ Normal Attack</button>
           <button class="action-btn" data-action="special">✨ Special Attack</button>
-          <button class="action-btn" data-action="stats">📊 View Statistics</button>
         </div>
 
         <div class="game-log" id="game-log">
           <div class="log-entry">🎮 Welcome to the arena! Battle begins...</div>
+        </div>
+      </div>
+
+      <!-- Victory Modal -->
+      <div id="victory-modal" class="victory-modal hidden" style="display: none;">
+        <div class="victory-overlay"></div>
+        <div class="victory-content">
+          <div class="victory-title" id="victory-title">🏆 VICTORY!</div>
+          <div class="victory-subtitle" id="victory-subtitle">You have triumphed!</div>
+          
+          <div class="winner-display" id="winner-display">
+            <div class="winner-icon" id="winner-icon">⚔️</div>
+            <div class="winner-name" id="winner-name">Champion</div>
+            <div class="winner-class" id="winner-class">Warrior</div>
+          </div>
+          
+          <div class="battle-stats" id="battle-stats">
+            <div class="stat-item">
+              <span class="stat-label">Turns Survived:</span>
+              <span class="stat-value" id="turns-survived">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Enemies Defeated:</span>
+              <span class="stat-value" id="enemies-defeated">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Damage Dealt:</span>
+              <span class="stat-value" id="damage-dealt">0</span>
+            </div>
+          </div>
+          
+          <div class="victory-actions">
+            <button class="victory-btn play-again" id="play-again-btn">🔄 Play Again</button>
+            <button class="victory-btn new-character" id="new-character-btn">👤 New Character</button>
+          </div>
         </div>
       </div>
     </div>
@@ -58,19 +96,26 @@
       // Initialize the web game when page loads
       document.addEventListener("DOMContentLoaded", () => {
         console.log("🔧 DOM loaded, initializing game...");
-        
+
         // Simple fallback game initialization
         console.log("✅ Initializing simple web game");
-        
+
         // Basic game state
         let players = [];
         let currentPlayer = null;
-        let gameMode = 'default';
+        let gameMode = "default";
         let selectedCharacter = null;
         let currentTurn = 1;
         let turnsLeft = 10;
-        let gamePhase = 'setup';
-        
+        let gamePhase = "setup";
+        let isPaused = false;
+        let pendingCallback = null;
+        let gameStats = {
+          damageDealt: 0,
+          enemiesDefeated: 0,
+          turnsSurvived: 0
+        };
+
         // Character stats
         const CHARACTER_STATS = {
           Fighter: { hp: 14, dmg: 4, mana: 45 },
@@ -79,33 +124,59 @@
           Berzerker: { hp: 10, dmg: 4, mana: 0 },
           Assassin: { hp: 8, dmg: 6, mana: 30 },
           Wizard: { hp: 10, dmg: 2, mana: 200 },
-          Valkyrie: { hp: 12, dmg: 3, mana: 150 }
+          Valkyrie: { hp: 12, dmg: 3, mana: 150 },
         };
-        
+
         // Names pool
         const NAMES = [
-          'Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry',
-          'Iris', 'Jack', 'Kate', 'Leo', 'Mia', 'Noah', 'Olivia', 'Pete',
-          'Quinn', 'Ruby', 'Sam', 'Tara', 'Uma', 'Victor', 'Willow', 'Xander',
-          'Yara', 'Zoe', 'Aria', 'Blake', 'Cora', 'Dean'
+          "Alice",
+          "Bob",
+          "Charlie",
+          "Diana",
+          "Eve",
+          "Frank",
+          "Grace",
+          "Henry",
+          "Iris",
+          "Jack",
+          "Kate",
+          "Leo",
+          "Mia",
+          "Noah",
+          "Olivia",
+          "Pete",
+          "Quinn",
+          "Ruby",
+          "Sam",
+          "Tara",
+          "Uma",
+          "Victor",
+          "Willow",
+          "Xander",
+          "Yara",
+          "Zoe",
+          "Aria",
+          "Blake",
+          "Cora",
+          "Dean",
         ];
-        
+
         // Create characters based on mode
         function createCharacters(mode) {
-          switch(mode) {
-            case 'default':
+          switch (mode) {
+            case "default":
               return createDefaultCharacters();
-            case 'random':
+            case "random":
               return createRandomParty();
-            case 'balanced':
+            case "balanced":
               return createBalancedParty();
-            case 'enhanced':
+            case "enhanced":
               return createDefaultCharacters(); // Same as default but with enhanced UI
             default:
               return createDefaultCharacters();
           }
         }
-        
+
         // Create default characters
         function createDefaultCharacters() {
           return [
@@ -113,32 +184,35 @@
             createCharacter("Ulder", "Paladin"),
             createCharacter("Moana", "Monk"),
             createCharacter("Draven", "Berzerker"),
-            createCharacter("Carl", "Assassin")
+            createCharacter("Carl", "Assassin"),
           ];
         }
-        
+
         // Create random party
         function createRandomParty() {
           const shuffledNames = [...NAMES].sort(() => Math.random() - 0.5).slice(0, 5);
           const classes = Object.keys(CHARACTER_STATS);
-          
-          return shuffledNames.map(name => {
+
+          return shuffledNames.map((name) => {
             const randomClass = classes[Math.floor(Math.random() * classes.length)];
             return createCharacter(name, randomClass);
           });
         }
-        
+
         // Create balanced party
         function createBalancedParty() {
           const shuffledNames = [...NAMES].sort(() => Math.random() - 0.5).slice(0, 7);
           const classes = Object.keys(CHARACTER_STATS);
-          
+
           return shuffledNames.map((name, index) => {
-            const className = index < classes.length ? classes[index] : classes[Math.floor(Math.random() * classes.length)];
+            const className =
+              index < classes.length
+                ? classes[index]
+                : classes[Math.floor(Math.random() * classes.length)];
             return createCharacter(name, className);
           });
         }
-        
+
         // Create individual character
         function createCharacter(name, className) {
           const stats = CHARACTER_STATS[className];
@@ -148,35 +222,35 @@
             hp: stats.hp,
             maxHp: stats.hp,
             dmg: stats.dmg,
-            mana: stats.mana
+            mana: stats.mana,
           };
         }
-        
+
         // Populate character selection
         function populateCharacterSelection() {
-          const container = document.getElementById('character-selection');
+          const container = document.getElementById("character-selection");
           if (!container) return;
-          
-          container.innerHTML = '';
+
+          container.innerHTML = "";
           players = createCharacters(gameMode);
-          
+
           const icons = {
-            Fighter: '⚔️',
-            Paladin: '🛡️', 
-            Monk: '☯️',
-            Berzerker: '🪓',
-            Assassin: '🗡️',
-            Wizard: '🔮',
-            Valkyrie: '🚁'
+            Fighter: "⚔️",
+            Paladin: "🛡️",
+            Monk: "☯️",
+            Berzerker: "🪓",
+            Assassin: "🗡️",
+            Wizard: "🔮",
+            Valkyrie: "🚁",
           };
-          
+
           players.forEach((character, index) => {
-            const card = document.createElement('div');
-            card.className = 'character-card';
+            const card = document.createElement("div");
+            card.className = "character-card";
             card.dataset.index = index;
-            
+
             card.innerHTML = `
-              <div class="character-icon">${icons[character.class] || '❓'}</div>
+              <div class="character-icon">${icons[character.class] || "❓"}</div>
               <h3>${character.name}</h3>
               <p class="character-class">${character.class}</p>
               <div class="character-stats">
@@ -194,64 +268,65 @@
                 </div>
               </div>
             `;
-            
-            card.addEventListener('click', () => selectCharacter(index));
+
+            card.addEventListener("click", () => selectCharacter(index));
             container.appendChild(card);
           });
         }
-        
+
         // Select character
         function selectCharacter(index) {
-          document.querySelectorAll('.character-card').forEach(card => {
-            card.classList.remove('selected');
+          document.querySelectorAll(".character-card").forEach((card) => {
+            card.classList.remove("selected");
           });
-          
-          document.querySelectorAll('.character-card')[index].classList.add('selected');
+
+          document.querySelectorAll(".character-card")[index].classList.add("selected");
           selectedCharacter = players[index];
           selectedCharacter.isPlayerControlled = true;
-          
-          const startBtn = document.getElementById('start-game');
+
+          const startBtn = document.getElementById("start-game");
           if (startBtn) startBtn.disabled = false;
         }
-        
+
         // Start game
         function startGame() {
           if (!selectedCharacter) return;
-          
-          gamePhase = 'battle';
-          const setupPhase = document.getElementById('game-setup');
-          const arenaPhase = document.getElementById('game-arena');
-          
-          if (setupPhase) setupPhase.style.display = 'none';
-          if (arenaPhase) arenaPhase.style.display = 'block';
-          
+
+          gamePhase = "battle";
+          const setupPhase = document.getElementById("game-setup");
+          const arenaPhase = document.getElementById("game-arena");
+
+          if (setupPhase) setupPhase.style.display = "none";
+          if (arenaPhase) arenaPhase.style.display = "block";
+
           updateGameDisplay();
           updateTurnInfo();
-          addLogMessage('🎮 Battle begins! Choose your action.');
-          
+          addLogMessage("🎮 Battle begins! Choose your action.");
+
           // Start game loop
-          setTimeout(gameLoop, 1000);
+          pausableTimeout(gameLoop, 2000);
         }
-        
+
         // Update game display
         function updateGameDisplay() {
-          const grid = document.getElementById('players-grid');
+          const grid = document.getElementById("players-grid");
           if (!grid) return;
-          
-          grid.innerHTML = '';
-          
-          players.forEach(player => {
-            const card = document.createElement('div');
-            card.className = `player-card ${player.isPlayerControlled ? 'controlled' : ''}`;
-            
+
+          grid.innerHTML = "";
+
+          players.forEach((player) => {
+            const card = document.createElement("div");
+            card.className = `player-card ${player.isPlayerControlled ? "controlled" : ""}`;
+
             const hpPercent = (player.hp / player.maxHp) * 100;
-            const manaPercent = player.mana > 0 ? (player.mana / CHARACTER_STATS[player.class].mana) * 100 : 0;
-            
-            const playerStatus = player.hp <= 0 ? 'defeated' : 'playing';
-            
+            const manaPercent =
+              player.mana > 0 ? (player.mana / CHARACTER_STATS[player.class].mana) * 100 : 0;
+
+            const playerStatus = player.hp <= 0 ? "defeated" : "playing";
+
             card.innerHTML = `
               <div class="player-header">
-                <h4>${player.isPlayerControlled ? player.name : '🤖 ' + player.name}</h4>
+                <h4>${player.isPlayerControlled ? player.name : "🤖 " + player.name}</h4>
                 <p class="player-class">${player.class}</p>
                 ${player.isPlayerControlled ? '<span class="controlled-indicator">👤 You</span>' : '<span class="ai-indicator">🤖 AI</span>'}
               </div>
@@ -269,62 +344,98 @@
                 <span>DMG: ${player.dmg}</span> | <span>Status: ${playerStatus}</span>
               </div>
             `;
-            
+
             grid.appendChild(card);
           });
         }
-        
+
         // Update turn info
         function updateTurnInfo() {
-          const turnCounter = document.getElementById('turn-counter');
-          const turnsLeftSpan = document.getElementById('turns-left');
-          
+          const turnCounter = document.getElementById("turn-counter");
+          const turnsLeftSpan = document.getElementById("turns-left");
+
           if (turnCounter) turnCounter.textContent = `Turn ${currentTurn}`;
           if (turnsLeftSpan) turnsLeftSpan.textContent = `${turnsLeft} turns left`;
         }
-        
+
         // Add log message
         function addLogMessage(message) {
-          const log = document.getElementById('game-log');
+          const log = document.getElementById("game-log");
           if (!log) return;
-          
-          const logEntry = document.createElement('div');
-          logEntry.className = 'log-entry';
+
+          const logEntry = document.createElement("div");
+          logEntry.className = "log-entry";
           logEntry.textContent = message;
           log.appendChild(logEntry);
           log.scrollTop = log.scrollHeight;
         }
-        
+
         // Get alive players
         function getAlivePlayers() {
-          return players.filter(player => player.hp > 0);
+          return players.filter((player) => player.hp > 0);
         }
-        
+
+        // Pausable timeout function with slower delays
+        function pausableTimeout(callback, delay) {
+          if (isPaused) {
+            pendingCallback = () => pausableTimeout(callback, delay);
+            return;
+          }
+          setTimeout(() => {
+            if (!isPaused) {
+              callback();
+            } else {
+              pendingCallback = callback;
+            }
+          }, delay);
+        }
+
+        // Toggle pause function
+        function togglePause() {
+          isPaused = !isPaused;
+          const pauseIndicator = document.getElementById('pause-indicator');
+          const pauseHelp = document.getElementById('pause-help');
+          
+          if (isPaused) {
+            if (pauseIndicator) pauseIndicator.style.display = 'block';
+            if (pauseHelp) pauseHelp.style.display = 'none';
+          } else {
+            if (pauseIndicator) pauseIndicator.style.display = 'none';
+            if (pauseHelp) pauseHelp.style.display = 'block';
+            
+            if (pendingCallback) {
+              const callback = pendingCallback;
+              pendingCallback = null;
+              callback();
+            }
+          }
+        }
+
         // Game loop
         function gameLoop() {
-          if (gamePhase !== 'battle') return;
-          
+          if (gamePhase !== "battle") return;
+
           const alivePlayers = getAlivePlayers();
-          
+
           // Check win conditions
           if (alivePlayers.length <= 1) {
             endGame();
             return;
           }
-          
+
           if (turnsLeft <= 0) {
             endGame();
             return;
           }
-          
+
           // Play turn for each alive player
           playTurn(alivePlayers);
         }
-        
+
         // Play turn
         function playTurn(alivePlayers) {
           let currentPlayerIndex = 0;
-          
+
           function nextPlayer() {
             if (currentPlayerIndex >= alivePlayers.length) {
               // End of turn
@@ -332,19 +443,19 @@
               turnsLeft--;
               updateTurnInfo();
               addLogMessage(`--- End of turn ${currentTurn - 1} ---`);
-              
-              setTimeout(gameLoop, 2000);
+
+              pausableTimeout(gameLoop, 3000);
               return;
             }
-            
+
             const player = alivePlayers[currentPlayerIndex];
             currentPlayerIndex++;
-            
+
             if (player.hp <= 0) {
               nextPlayer();
               return;
             }
-            
+
             if (player.isPlayerControlled) {
               addLogMessage(`Your turn (${player.name})! Choose an action.`);
               showPlayerActions(player, nextPlayer);
@@ -353,136 +464,353 @@
               aiTurn(player, nextPlayer);
             }
           }
-          
+
           nextPlayer();
         }
-        
+
         // Show player actions
         function showPlayerActions(player, callback) {
-          const actionsDiv = document.getElementById('actions');
+          const actionsDiv = document.getElementById("actions");
           if (actionsDiv) {
-            actionsDiv.classList.remove('hidden');
-            
-            const actionBtns = actionsDiv.querySelectorAll('.action-btn');
-            actionBtns.forEach(btn => {
+            actionsDiv.classList.remove("hidden");
+
+            const actionBtns = actionsDiv.querySelectorAll(".action-btn");
+            actionBtns.forEach((btn) => {
               btn.onclick = () => {
                 handlePlayerAction(player, btn.dataset.action, callback);
-                actionsDiv.classList.add('hidden');
+                actionsDiv.classList.add("hidden");
               };
             });
           }
         }
-        
+
+        // Find target with lowest HP
+        function findWeakestTarget(targets) {
+          return targets.reduce((weakest, current) => {
+            return current.hp < weakest.hp ? current : weakest;
+          });
+        }
+
         // Handle player action
         function handlePlayerAction(player, action, callback) {
-          const targets = getAlivePlayers().filter(p => p !== player);
-          
+          const targets = getAlivePlayers().filter((p) => p !== player);
+
           if (targets.length === 0) {
             callback();
             return;
           }
-          
-          const target = targets[Math.floor(Math.random() * targets.length)];
-          
+
+          const target = findWeakestTarget(targets);
           const targetName = target.isPlayerControlled ? target.name : `🤖 ${target.name}`;
+          addLogMessage(`🎯 Ciblage automatique: ${targetName} (${target.hp} PV restants)`);
+
+          const originalTargetName = target.isPlayerControlled ? target.name : `🤖 ${target.name}`;
+
+          let damage = 0;
           
-          switch(action) {
-            case 'normal':
-              addLogMessage(`${player.name} attacks ${targetName} for ${player.dmg} damage!`);
-              target.hp -= player.dmg;
+          switch (action) {
+            case "normal":
+              damage = player.dmg;
+              addLogMessage(`${player.name} attacks ${originalTargetName} for ${damage} damage!`);
+              target.hp -= damage;
               if (target.hp < 0) target.hp = 0;
+              if (player.isPlayerControlled) gameStats.damageDealt += damage;
               break;
-              
-            case 'special':
-              const specialDmg = Math.floor(player.dmg * 1.5);
-              addLogMessage(`${player.name} uses special attack on ${targetName} for ${specialDmg} damage!`);
-              target.hp -= specialDmg;
+
+            case "special":
+              damage = Math.floor(player.dmg * 1.5);
+              addLogMessage(
+                `${player.name} uses special attack on ${originalTargetName} for ${damage} damage!`,
+              );
+              target.hp -= damage;
               if (target.hp < 0) target.hp = 0;
+              if (player.isPlayerControlled) gameStats.damageDealt += damage;
               break;
-              
-            case 'stats':
-              addLogMessage(`${player.name} checks stats: ${player.hp}/${player.maxHp} HP, ${player.dmg} DMG, ${player.mana} Mana`);
+
+            case "stats":
+              addLogMessage(
+                `${player.name} checks stats: ${player.hp}/${player.maxHp} HP, ${player.dmg} DMG, ${player.mana} Mana`,
+              );
               break;
           }
-          
+
           if (target.hp <= 0) {
-            addLogMessage(`${targetName} is defeated!`);
+            addLogMessage(`${originalTargetName} is defeated!`);
+            if (player.isPlayerControlled) gameStats.enemiesDefeated++;
           }
-          
+
           updateGameDisplay();
-          setTimeout(callback, 1500);
+          pausableTimeout(callback, 2500);
         }
-        
+
         // AI turn
         function aiTurn(player, callback) {
-          const targets = getAlivePlayers().filter(p => p !== player);
-          
+          const targets = getAlivePlayers().filter((p) => p !== player);
+
           if (targets.length === 0) {
             callback();
             return;
           }
-          
+
           const target = targets[Math.floor(Math.random() * targets.length)];
           const targetName = target.isPlayerControlled ? target.name : `🤖 ${target.name}`;
-          
-          addLogMessage(`🤖 ${player.name} (AI) attacks ${targetName} for ${player.dmg} damage!`);
-          target.hp -= player.dmg;
+
+          const damage = player.dmg;
+          addLogMessage(`🤖 ${player.name} (AI) attacks ${targetName} for ${damage} damage!`);
+          target.hp -= damage;
           if (target.hp < 0) target.hp = 0;
-          
+
           if (target.hp <= 0) {
             const targetName = target.isPlayerControlled ? target.name : `🤖 ${target.name}`;
             addLogMessage(`${targetName} is defeated!`);
           }
-          
+
           updateGameDisplay();
-          setTimeout(callback, 1500);
+          pausableTimeout(callback, 2500);
         }
-        
+
+        // Show victory modal
+        function showVictoryModal(winner, scenario) {
+          const modal = document.getElementById('victory-modal');
+          const title = document.getElementById('victory-title');
+          const subtitle = document.getElementById('victory-subtitle');
+          const winnerIcon = document.getElementById('winner-icon');
+          const winnerName = document.getElementById('winner-name');
+          const winnerClass = document.getElementById('winner-class');
+          const turnsSurvived = document.getElementById('turns-survived');
+          const enemiesDefeated = document.getElementById('enemies-defeated');
+          const damageDealt = document.getElementById('damage-dealt');
+
+          // Character icons
+          const icons = {
+            Fighter: "⚔️",
+            Paladin: "🛡️",
+            Monk: "☯️",
+            Berzerker: "🪓",
+            Assassin: "🗿",
+            Wizard: "🔮",
+            Valkyrie: "🚁"
+          };
+
+          // Configure based on scenario
+          switch (scenario) {
+            case 'player_victory':
+              modal.className = 'victory-modal';
+              title.textContent = '🏆 VICTORY!';
+              subtitle.textContent = '🎉 You have triumphed! Excellent strategy!';
+              break;
+            
+            case 'ai_victory':
+              modal.className = 'victory-modal defeat';
+              title.textContent = '☠️ DEFEAT';
+              subtitle.textContent = '💀 You have been vanquished... Try again!';
+              break;
+            
+            case 'draw':
+              modal.className = 'victory-modal';
+              title.textContent = '⚔️ DRAW';
+              subtitle.textContent = '⏱️ Time\'s up! Epic battle!';
+              break;
+            
+            case 'massacre':
+              modal.className = 'victory-modal defeat';
+              title.textContent = '☠️ CARNAGE';
+              subtitle.textContent = '💀 Total annihilation! Everyone perished!';
+              break;
+          }
+
+          // Set winner info
+          if (winner) {
+            winnerIcon.textContent = icons[winner.class] || '❓';
+            winnerName.textContent = winner.name;
+            winnerClass.textContent = winner.class;
+          } else {
+            winnerIcon.textContent = '☠️';
+            winnerName.textContent = 'No Survivor';
+            winnerClass.textContent = 'Total Defeat';
+          }
+
+          // Set stats
+          turnsSurvived.textContent = currentTurn - 1;
+          enemiesDefeated.textContent = gameStats.enemiesDefeated;
+          damageDealt.textContent = gameStats.damageDealt;
+
+          // Show modal
+          modal.classList.remove('hidden');
+          modal.style.display = 'flex';
+          
+          // Force refresh of button listeners
+          setTimeout(() => {
+            const playAgainBtn = document.getElementById('play-again-btn');
+            const newCharacterBtn = document.getElementById('new-character-btn');
+            
+            if (playAgainBtn) {
+              playAgainBtn.onclick = function() {
+                console.log("🔄 Play Again clicked!");
+                resetGame();
+              };
+            }
+            
+            if (newCharacterBtn) {
+              newCharacterBtn.onclick = function() {
+                console.log("👤 New Character clicked!");
+                returnToSetup();
+              };
+            }
+          }, 100);
+        }
+
         // End game
         function endGame() {
-          gamePhase = 'ended';
+          gamePhase = "ended";
           const alivePlayers = getAlivePlayers();
+          gameStats.turnsSurvived = currentTurn - 1;
+
+          let scenario, winner = null;
           
           if (alivePlayers.length === 1) {
-            const winner = alivePlayers[0];
+            winner = alivePlayers[0];
             const winnerName = winner.isPlayerControlled ? winner.name : `🤖 ${winner.name}`;
-            addLogMessage(`🏆 ${winnerName} wins the battle!`);
+            
+            if (winner.isPlayerControlled) {
+              scenario = 'player_victory';
+              addLogMessage(`🏆 ${winnerName} wins the battle!`);
+            } else {
+              scenario = 'ai_victory';
+              addLogMessage(`🤖 ${winnerName} defeats you!`);
+            }
           } else if (alivePlayers.length > 1) {
+            scenario = 'draw';
             addLogMessage("⏰ Time's up! Multiple survivors!");
           } else {
+            scenario = 'massacre';
             addLogMessage("💀 Everyone died!");
           }
+
+          const actionsDiv = document.getElementById("actions");
+          if (actionsDiv) actionsDiv.classList.add("hidden");
           
-          const actionsDiv = document.getElementById('actions');
-          if (actionsDiv) actionsDiv.classList.add('hidden');
+          // Show victory modal after a short delay
+          setTimeout(() => {
+            showVictoryModal(winner, scenario);
+          }, 2000);
         }
-        
+
         // Event listeners
-        const startBtn = document.getElementById('start-game');
+        const startBtn = document.getElementById("start-game");
         if (startBtn) {
-          startBtn.addEventListener('click', startGame);
+          startBtn.addEventListener("click", startGame);
         }
-        
+
+        // Add Enter key listener for pause/resume
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" && gamePhase === "battle") {
+            togglePause();
+          }
+        });
+
         // Mode selection listeners
-        document.querySelectorAll('.mode-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
+        document.querySelectorAll(".mode-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
             // Update active button
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            
+            document.querySelectorAll(".mode-btn").forEach((b) => b.classList.remove("active"));
+            e.target.classList.add("active");
+
             // Update game mode and regenerate characters
             gameMode = e.target.dataset.mode;
             selectedCharacter = null;
             if (startBtn) startBtn.disabled = true;
-            
+
             // Regenerate character selection
             populateCharacterSelection();
           });
         });
+
+        // Reset game function
+        function resetGame() {
+          console.log("🔄 Resetting game...");
+          
+          // Reset game state
+          gamePhase = "battle";
+          currentTurn = 1;
+          turnsLeft = 10;
+          isPaused = false;
+          pendingCallback = null;
+          gameStats = {
+            damageDealt: 0,
+            enemiesDefeated: 0,
+            turnsSurvived: 0
+          };
+          
+          // Reset players HP to full
+          players.forEach(player => {
+            player.hp = player.maxHp;
+          });
+          
+          // Hide modal
+          const modal = document.getElementById('victory-modal');
+          if (modal) {
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+          }
+          
+          // Clear game log and restart
+          const log = document.getElementById('game-log');
+          if (log) log.innerHTML = '<div class="log-entry">🎮 Battle begins again! Choose your action.</div>';
+          
+          updateGameDisplay();
+          updateTurnInfo();
+          
+          // Restart game loop
+          setTimeout(() => {
+            pausableTimeout(gameLoop, 1000);
+          }, 500);
+        }
         
+        // Return to character selection
+        function returnToSetup() {
+          console.log("👤 Returning to character selection...");
+          
+          // Reset everything
+          gamePhase = "setup";
+          currentTurn = 1;
+          turnsLeft = 10;
+          isPaused = false;
+          pendingCallback = null;
+          selectedCharacter = null;
+          gameStats = {
+            damageDealt: 0,
+            enemiesDefeated: 0,
+            turnsSurvived: 0
+          };
+          
+          // Hide modal and arena, show setup
+          const modal = document.getElementById('victory-modal');
+          const setupPhase = document.getElementById('game-setup');
+          const arenaPhase = document.getElementById('game-arena');
+          const startBtn = document.getElementById('start-game');
+          
+          if (modal) {
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+          }
+          if (setupPhase) setupPhase.style.display = 'block';
+          if (arenaPhase) arenaPhase.style.display = 'none';
+          if (startBtn) startBtn.disabled = true;
+          
+          // Clear selected character cards
+          document.querySelectorAll('.character-card').forEach(card => {
+            card.classList.remove('selected');
+          });
+          
+          // Regenerate characters for new game
+          populateCharacterSelection();
+        }
+
         // Initialize
         populateCharacterSelection();
         console.log("✅ Game initialized");
+        
       });
     </script>
   </body>

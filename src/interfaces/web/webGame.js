@@ -63,7 +63,7 @@ export class WebGame {
         container.innerHTML = '';
 
         let characters = [];
-        
+
         switch(this.gameMode) {
             case 'random':
                 characters = RandomGenerator.generateRandomParty();
@@ -130,16 +130,16 @@ export class WebGame {
 
     selectCharacter(cardElement) {
         const index = parseInt(cardElement.dataset.index);
-        
+
         document.querySelectorAll('.character-card').forEach(card => {
             card.classList.remove('selected');
         });
-        
+
         cardElement.classList.add('selected');
-        
+
         this.selectedCharacter = this.players[index];
         this.selectedCharacter.isPlayerControlled = true;
-        
+
         const startBtn = document.getElementById('start-game');
         if (startBtn) startBtn.disabled = false;
     }
@@ -155,10 +155,10 @@ export class WebGame {
     showBattleInterface() {
         const setupPhase = document.getElementById('setup-phase');
         const battlePhase = document.getElementById('battle-phase');
-        
+
         if (setupPhase) setupPhase.style.display = 'none';
         if (battlePhase) battlePhase.style.display = 'block';
-        
+
         this.updateBattleDisplay();
     }
 
@@ -183,7 +183,7 @@ export class WebGame {
     createPlayerBattleCard(player) {
         const card = document.createElement('div');
         card.className = `player-card ${player.isDead() ? 'dead' : ''} ${player.isPlayerControlled ? 'controlled' : ''}`;
-        
+
         const className = player.constructor.name;
         const icons = {
             Fighter: '⚔️',
@@ -233,7 +233,7 @@ export class WebGame {
         const logEntry = document.createElement('div');
         logEntry.className = 'log-entry';
         logEntry.textContent = message;
-        
+
         log.appendChild(logEntry);
         log.scrollTop = log.scrollHeight;
     }
@@ -243,7 +243,7 @@ export class WebGame {
             await this.playTurn();
             this.endTurn();
         }
-        
+
         this.endGame();
     }
 
@@ -277,7 +277,7 @@ export class WebGame {
         const target = targets[Math.floor(Math.random() * targets.length)];
         this.updateCombatLog(`You (${player.name}) attack ${target.name}!`);
         player.dealDamage(target);
-        
+
         if (target.isDead()) {
             this.updateCombatLog(`${target.name} is defeated!`);
         }
@@ -289,10 +289,10 @@ export class WebGame {
 
         const target = targets[Math.floor(Math.random() * targets.length)];
         this.updateCombatLog(`${player.name} (AI) attacks ${target.name}!`);
-        
+
         await this.sleep(500);
         player.dealDamage(target);
-        
+
         if (target.isDead()) {
             this.updateCombatLog(`${target.name} is defeated!`);
         }
@@ -336,5 +336,4 @@ export class WebGame {
     }
 }
 
-// Default export for compatibility
 export default WebGame;

@@ -187,8 +187,8 @@ export class TerminalGame {
     console.log(`\n--- End of turn ${this.currentTurn - 1} ---`);
     console.log("Players still alive:");
     alivePlayers.forEach(player => {
-      const { name, hp } = player;
-      console.log(`- ${name}: ${hp} HP`);
+      const { name, hp, mana } = player;
+      console.log(`- ${name}: ${hp} HP, ${mana} Mana`);
     });
 
     console.log(`Turns left: ${this.turnLeft}`);
