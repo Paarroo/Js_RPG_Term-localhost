@@ -1,6 +1,4 @@
-// UI Manager for enhanced visual display
-class UIManager {
-  // Display health bar with visual representation
+export class UIManager {
   static displayHealthBar(character) {
     const { hp, maxHp } = character;
     const barLength = 10;
@@ -13,7 +11,6 @@ class UIManager {
     return `${filledBar}${emptyBar} (${hp}/${maxHp})`;
   }
   
-  // Display mana bar with visual representation
   static displayManaBar(character) {
     const { mana } = character;
     const maxMana = character.maxMana || 200; // Fallback for classes without maxMana
@@ -27,7 +24,6 @@ class UIManager {
     return `${filledBar}${emptyBar} (${mana}/${maxMana})`;
   }
   
-  // Get class icon for visual representation
   static getClassIcon(className) {
     const icons = {
       Fighter: '⚔️',
@@ -42,7 +38,6 @@ class UIManager {
     return icons[className] || '❓';
   }
   
-  // Enhanced stats display with visual elements
   static displayEnhancedStats(character) {
     const className = character.constructor.name;
     const icon = this.getClassIcon(className);
@@ -53,13 +48,11 @@ class UIManager {
     console.log(`   Mana: ${this.displayManaBar(character)}`);
     console.log(`   DMG:  ${dmg} points`);
     
-    // Display special effects if character has them
     if (typeof character.displaySpecialEffects === 'function') {
       character.displaySpecialEffects();
     }
   }
   
-  // Display all characters with enhanced formatting
   static displayAllEnhanced(characters) {
     console.log("\n" + "=".repeat(50));
     console.log("           🏟️  BATTLE ARENA STATUS 🏟️");
@@ -87,7 +80,6 @@ class UIManager {
     console.log("\n" + "=".repeat(50));
   }
   
-  // Display turn header with enhanced formatting
   static displayTurnHeader(turnNumber, currentPlayer) {
     const className = currentPlayer.constructor.name;
     const icon = this.getClassIcon(className);
@@ -100,7 +92,6 @@ class UIManager {
     console.log();
   }
   
-  // Display game start header
   static displayGameStart() {
     console.log("\n" + "=".repeat(60));
     console.log("🎮                RPG BATTLE ARENA                🎮");
@@ -108,7 +99,6 @@ class UIManager {
     console.log("=".repeat(60));
   }
   
-  // Display winner with celebration
   static displayWinner(winner) {
     const className = winner.constructor.name;
     const icon = this.getClassIcon(className);
@@ -122,4 +112,4 @@ class UIManager {
   }
 }
 
-module.exports = UIManager;
+export default UIManager;

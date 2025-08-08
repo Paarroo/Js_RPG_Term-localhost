@@ -1,17 +1,15 @@
-const Character = require('./character');
-const { ABILITY_COSTS, MESSAGES } = require('../game/gameConfig');
+import { Character } from './character.js';
+import { ABILITY_COSTS, MESSAGES } from '../gameConfig.js';
 
-class Wizard extends Character {
+export class Wizard extends Character {
   constructor(name) {
     super(name);
   }
 
-  // Fireball special attack
   fireball(target) {
     const { name } = this;
     const manaCost = ABILITY_COSTS.fireball;
 
-    // Check and consume mana
     if (!this.consumeMana(manaCost, "Fireball")) {
       return false;
     }
@@ -24,4 +22,4 @@ class Wizard extends Character {
   }
 }
 
-module.exports = Wizard;
+export default Wizard;

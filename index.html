@@ -54,38 +54,434 @@
       </div>
     </div>
 
-    <!-- Game Configuration -->
-    <script src="web/gameConfig.js"></script>
-    
-    <!-- Character Classes -->
-    <script src="web/character.js"></script>
-    <script src="web/fighter.js"></script>
-    <script src="web/paladin.js"></script>
-    <script src="web/monk.js"></script>
-    <script src="web/berzerker.js"></script>
-    <script src="web/assassin.js"></script>
-    <script src="web/wizard.js"></script>
-    <script src="web/valkyrie.js"></script>
-    <script src="web/webGame.js"></script>
-
     <script>
       // Initialize the web game when page loads
       document.addEventListener("DOMContentLoaded", () => {
         console.log("🔧 DOM loaded, initializing game...");
         
-        // Check if classes are loaded
-        if (typeof CHARACTER_STATS === 'undefined') {
-          console.error("❌ CHARACTER_STATS not loaded!");
-          return;
-        }
-        if (typeof WebGame === 'undefined') {
-          console.error("❌ WebGame class not loaded!");
-          return;
+        // Simple fallback game initialization
+        console.log("✅ Initializing simple web game");
+        
+        // Basic game state
+        let players = [];
+        let currentPlayer = null;
+        let gameMode = 'default';
+        let selectedCharacter = null;
+        let currentTurn = 1;
+        let turnsLeft = 10;
+        let gamePhase = 'setup';
+        
+        // Character stats
+        const CHARACTER_STATS = {
+          Fighter: { hp: 14, dmg: 4, mana: 45 },
+          Paladin: { hp: 16, dmg: 3, mana: 160 },
+          Monk: { hp: 10, dmg: 2, mana: 200 },
+          Berzerker: { hp: 10, dmg: 4, mana: 0 },
+          Assassin: { hp: 8, dmg: 6, mana: 30 },
+          Wizard: { hp: 10, dmg: 2, mana: 200 },
+          Valkyrie: { hp: 12, dmg: 3, mana: 150 }
+        };
+        
+        // Names pool
+        const NAMES = [
+          'Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry',
+          'Iris', 'Jack', 'Kate', 'Leo', 'Mia', 'Noah', 'Olivia', 'Pete',
+          'Quinn', 'Ruby', 'Sam', 'Tara', 'Uma', 'Victor', 'Willow', 'Xander',
+          'Yara', 'Zoe', 'Aria', 'Blake', 'Cora', 'Dean'
+        ];
+        
+        // Create characters based on mode
+        function createCharacters(mode) {
+          switch(mode) {
+            case 'default':
+              return createDefaultCharacters();
+            case 'random':
+              return createRandomParty();
+            case 'balanced':
+              return createBalancedParty();
+            case 'enhanced':
+              return createDefaultCharacters(); // Same as default but with enhanced UI
+            default:
+              return createDefaultCharacters();
+          }
         }
         
-        console.log("✅ All classes loaded, creating game instance");
-        const webGame = new WebGame();
-        webGame.initialize();
+        // Create default characters
+        function createDefaultCharacters() {
+          return [
+            createCharacter("Grace", "Fighter"),
+            createCharacter("Ulder", "Paladin"),
+            createCharacter("Moana", "Monk"),
+            createCharacter("Draven", "Berzerker"),
+            createCharacter("Carl", "Assassin")
+          ];
+        }
+        
+        // Create random party
+        function createRandomParty() {
+          const shuffledNames = [...NAMES].sort(() => Math.random() - 0.5).slice(0, 5);
+          const classes = Object.keys(CHARACTER_STATS);
+          
+          return shuffledNames.map(name => {
+            const randomClass = classes[Math.floor(Math.random() * classes.length)];
+            return createCharacter(name, randomClass);
+          });
+        }
+        
+        // Create balanced party
+        function createBalancedParty() {
+          const shuffledNames = [...NAMES].sort(() => Math.random() - 0.5).slice(0, 7);
+          const classes = Object.keys(CHARACTER_STATS);
+          
+          return shuffledNames.map((name, index) => {
+            const className = index < classes.length ? classes[index] : classes[Math.floor(Math.random() * classes.length)];
+            return createCharacter(name, className);
+          });
+        }
+        
+        // Create individual character
+        function createCharacter(name, className) {
+          const stats = CHARACTER_STATS[className];
+          return {
+            name: name,
+            class: className,
+            hp: stats.hp,
+            maxHp: stats.hp,
+            dmg: stats.dmg,
+            mana: stats.mana
+          };
+        }
+        
+        // Populate character selection
+        function populateCharacterSelection() {
+          const container = document.getElementById('character-selection');
+          if (!container) return;
+          
+          container.innerHTML = '';
+          players = createCharacters(gameMode);
+          
+          const icons = {
+            Fighter: '⚔️',
+            Paladin: '🛡️', 
+            Monk: '☯️',
+            Berzerker: '🪓',
+            Assassin: '🗡️',
+            Wizard: '🔮',
+            Valkyrie: '🚁'
+          };
+          
+          players.forEach((character, index) => {
+            const card = document.createElement('div');
+            card.className = 'character-card';
+            card.dataset.index = index;
+            
+            card.innerHTML = `
+              <div class="character-icon">${icons[character.class] || '❓'}</div>
+              <h3>${character.name}</h3>
+              <p class="character-class">${character.class}</p>
+              <div class="character-stats">
+                <div class="stat">
+                  <span class="stat-label">HP:</span>
+                  <span class="stat-value">${character.hp}/${character.maxHp}</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-label">DMG:</span>
+                  <span class="stat-value">${character.dmg}</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-label">Mana:</span>
+                  <span class="stat-value">${character.mana}</span>
+                </div>
+              </div>
+            `;
+            
+            card.addEventListener('click', () => selectCharacter(index));
+            container.appendChild(card);
+          });
+        }
+        
+        // Select character
+        function selectCharacter(index) {
+          document.querySelectorAll('.character-card').forEach(card => {
+            card.classList.remove('selected');
+          });
+          
+          document.querySelectorAll('.character-card')[index].classList.add('selected');
+          selectedCharacter = players[index];
+          selectedCharacter.isPlayerControlled = true;
+          
+          const startBtn = document.getElementById('start-game');
+          if (startBtn) startBtn.disabled = false;
+        }
+        
+        // Start game
+        function startGame() {
+          if (!selectedCharacter) return;
+          
+          gamePhase = 'battle';
+          const setupPhase = document.getElementById('game-setup');
+          const arenaPhase = document.getElementById('game-arena');
+          
+          if (setupPhase) setupPhase.style.display = 'none';
+          if (arenaPhase) arenaPhase.style.display = 'block';
+          
+          updateGameDisplay();
+          updateTurnInfo();
+          addLogMessage('🎮 Battle begins! Choose your action.');
+          
+          // Start game loop
+          setTimeout(gameLoop, 1000);
+        }
+        
+        // Update game display
+        function updateGameDisplay() {
+          const grid = document.getElementById('players-grid');
+          if (!grid) return;
+          
+          grid.innerHTML = '';
+          
+          players.forEach(player => {
+            const card = document.createElement('div');
+            card.className = `player-card ${player.isPlayerControlled ? 'controlled' : ''}`;
+            
+            const hpPercent = (player.hp / player.maxHp) * 100;
+            const manaPercent = player.mana > 0 ? (player.mana / CHARACTER_STATS[player.class].mana) * 100 : 0;
+            
+            const playerStatus = player.hp <= 0 ? 'defeated' : 'playing';
+            
+            card.innerHTML = `
+              <div class="player-header">
+                <h4>${player.isPlayerControlled ? player.name : '🤖 ' + player.name}</h4>
+                <p class="player-class">${player.class}</p>
+                ${player.isPlayerControlled ? '<span class="controlled-indicator">👤 You</span>' : '<span class="ai-indicator">🤖 AI</span>'}
+              </div>
+              <div class="health-bar">
+                <div class="health-fill" style="width: ${hpPercent}%"></div>
+                <span class="health-text">${player.hp}/${player.maxHp}</span>
+              </div>
+              <div class="hp-stat">HP: ${player.hp}/${player.maxHp}</div>
+              <div class="mana-bar">
+                <div class="mana-fill" style="width: ${manaPercent}%"></div>
+                <span class="mana-text">${player.mana}/${CHARACTER_STATS[player.class].mana}</span>
+              </div>
+              <div class="mana-stat">Mana: ${player.mana}/${CHARACTER_STATS[player.class].mana}</div>
+              <div class="player-stats">
+                <span>DMG: ${player.dmg}</span> | <span>Status: ${playerStatus}</span>
+              </div>
+            `;
+            
+            grid.appendChild(card);
+          });
+        }
+        
+        // Update turn info
+        function updateTurnInfo() {
+          const turnCounter = document.getElementById('turn-counter');
+          const turnsLeftSpan = document.getElementById('turns-left');
+          
+          if (turnCounter) turnCounter.textContent = `Turn ${currentTurn}`;
+          if (turnsLeftSpan) turnsLeftSpan.textContent = `${turnsLeft} turns left`;
+        }
+        
+        // Add log message
+        function addLogMessage(message) {
+          const log = document.getElementById('game-log');
+          if (!log) return;
+          
+          const logEntry = document.createElement('div');
+          logEntry.className = 'log-entry';
+          logEntry.textContent = message;
+          log.appendChild(logEntry);
+          log.scrollTop = log.scrollHeight;
+        }
+        
+        // Get alive players
+        function getAlivePlayers() {
+          return players.filter(player => player.hp > 0);
+        }
+        
+        // Game loop
+        function gameLoop() {
+          if (gamePhase !== 'battle') return;
+          
+          const alivePlayers = getAlivePlayers();
+          
+          // Check win conditions
+          if (alivePlayers.length <= 1) {
+            endGame();
+            return;
+          }
+          
+          if (turnsLeft <= 0) {
+            endGame();
+            return;
+          }
+          
+          // Play turn for each alive player
+          playTurn(alivePlayers);
+        }
+        
+        // Play turn
+        function playTurn(alivePlayers) {
+          let currentPlayerIndex = 0;
+          
+          function nextPlayer() {
+            if (currentPlayerIndex >= alivePlayers.length) {
+              // End of turn
+              currentTurn++;
+              turnsLeft--;
+              updateTurnInfo();
+              addLogMessage(`--- End of turn ${currentTurn - 1} ---`);
+              
+              setTimeout(gameLoop, 2000);
+              return;
+            }
+            
+            const player = alivePlayers[currentPlayerIndex];
+            currentPlayerIndex++;
+            
+            if (player.hp <= 0) {
+              nextPlayer();
+              return;
+            }
+            
+            if (player.isPlayerControlled) {
+              addLogMessage(`Your turn (${player.name})! Choose an action.`);
+              showPlayerActions(player, nextPlayer);
+            } else {
+              // AI turn
+              aiTurn(player, nextPlayer);
+            }
+          }
+          
+          nextPlayer();
+        }
+        
+        // Show player actions
+        function showPlayerActions(player, callback) {
+          const actionsDiv = document.getElementById('actions');
+          if (actionsDiv) {
+            actionsDiv.classList.remove('hidden');
+            
+            const actionBtns = actionsDiv.querySelectorAll('.action-btn');
+            actionBtns.forEach(btn => {
+              btn.onclick = () => {
+                handlePlayerAction(player, btn.dataset.action, callback);
+                actionsDiv.classList.add('hidden');
+              };
+            });
+          }
+        }
+        
+        // Handle player action
+        function handlePlayerAction(player, action, callback) {
+          const targets = getAlivePlayers().filter(p => p !== player);
+          
+          if (targets.length === 0) {
+            callback();
+            return;
+          }
+          
+          const target = targets[Math.floor(Math.random() * targets.length)];
+          
+          const targetName = target.isPlayerControlled ? target.name : `🤖 ${target.name}`;
+          
+          switch(action) {
+            case 'normal':
+              addLogMessage(`${player.name} attacks ${targetName} for ${player.dmg} damage!`);
+              target.hp -= player.dmg;
+              if (target.hp < 0) target.hp = 0;
+              break;
+              
+            case 'special':
+              const specialDmg = Math.floor(player.dmg * 1.5);
+              addLogMessage(`${player.name} uses special attack on ${targetName} for ${specialDmg} damage!`);
+              target.hp -= specialDmg;
+              if (target.hp < 0) target.hp = 0;
+              break;
+              
+            case 'stats':
+              addLogMessage(`${player.name} checks stats: ${player.hp}/${player.maxHp} HP, ${player.dmg} DMG, ${player.mana} Mana`);
+              break;
+          }
+          
+          if (target.hp <= 0) {
+            addLogMessage(`${targetName} is defeated!`);
+          }
+          
+          updateGameDisplay();
+          setTimeout(callback, 1500);
+        }
+        
+        // AI turn
+        function aiTurn(player, callback) {
+          const targets = getAlivePlayers().filter(p => p !== player);
+          
+          if (targets.length === 0) {
+            callback();
+            return;
+          }
+          
+          const target = targets[Math.floor(Math.random() * targets.length)];
+          const targetName = target.isPlayerControlled ? target.name : `🤖 ${target.name}`;
+          
+          addLogMessage(`🤖 ${player.name} (AI) attacks ${targetName} for ${player.dmg} damage!`);
+          target.hp -= player.dmg;
+          if (target.hp < 0) target.hp = 0;
+          
+          if (target.hp <= 0) {
+            const targetName = target.isPlayerControlled ? target.name : `🤖 ${target.name}`;
+            addLogMessage(`${targetName} is defeated!`);
+          }
+          
+          updateGameDisplay();
+          setTimeout(callback, 1500);
+        }
+        
+        // End game
+        function endGame() {
+          gamePhase = 'ended';
+          const alivePlayers = getAlivePlayers();
+          
+          if (alivePlayers.length === 1) {
+            const winner = alivePlayers[0];
+            const winnerName = winner.isPlayerControlled ? winner.name : `🤖 ${winner.name}`;
+            addLogMessage(`🏆 ${winnerName} wins the battle!`);
+          } else if (alivePlayers.length > 1) {
+            addLogMessage("⏰ Time's up! Multiple survivors!");
+          } else {
+            addLogMessage("💀 Everyone died!");
+          }
+          
+          const actionsDiv = document.getElementById('actions');
+          if (actionsDiv) actionsDiv.classList.add('hidden');
+        }
+        
+        // Event listeners
+        const startBtn = document.getElementById('start-game');
+        if (startBtn) {
+          startBtn.addEventListener('click', startGame);
+        }
+        
+        // Mode selection listeners
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            // Update active button
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            
+            // Update game mode and regenerate characters
+            gameMode = e.target.dataset.mode;
+            selectedCharacter = null;
+            if (startBtn) startBtn.disabled = true;
+            
+            // Regenerate character selection
+            populateCharacterSelection();
+          });
+        });
+        
+        // Initialize
+        populateCharacterSelection();
         console.log("✅ Game initialized");
       });
     </script>

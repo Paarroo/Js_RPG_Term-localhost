@@ -1,17 +1,15 @@
-const Character = require('./character');
-const { ABILITY_COSTS, MESSAGES } = require('../game/gameConfig');
+import { Character } from './character.js';
+import { ABILITY_COSTS, MESSAGES } from '../gameConfig.js';
 
-class Valkyrie extends Character {
+export class Valkyrie extends Character {
   constructor(name) {
     super(name);
   }
 
-  // Missile Swarm special attack
   missileSwarm(target) {
     const { name } = this;
     const manaCost = ABILITY_COSTS.missileSwarm;
 
-    // Check and consume mana
     if (!this.consumeMana(manaCost, "Missile Swarm")) {
       return false;
     }
@@ -24,4 +22,4 @@ class Valkyrie extends Character {
   }
 }
 
-module.exports = Valkyrie;
+export default Valkyrie;

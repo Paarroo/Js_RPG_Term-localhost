@@ -1,4 +1,5 @@
-const CHARACTER_STATS = {
+
+export const CHARACTER_STATS = {
   Fighter: { hp: 14, dmg: 4, mana: 45 },
   Paladin: { hp: 16, dmg: 3, mana: 160 },
   Monk: { hp: 10, dmg: 2, mana: 200 },
@@ -8,7 +9,7 @@ const CHARACTER_STATS = {
   Valkyrie: { hp: 12, dmg: 3, mana: 150 }
 };
 
-const ABILITY_COSTS = {
+export const ABILITY_COSTS = {
   darkVision: 20,
   healingLightning: 40,
   heal: 25,
@@ -18,7 +19,7 @@ const ABILITY_COSTS = {
   missileSwarm: 35
 };
 
-const MESSAGES = {
+export const MESSAGES = {
   MANA: {
     notEnough: (name, ability) => `${name} doesn't have enough mana for ${ability}!`
   },
@@ -38,16 +39,13 @@ const MESSAGES = {
     heals: (name, amount, hp, maxHp) => `${name} heals for ${amount} HP! (${hp}/${maxHp})`
   },
   EFFECTS: {
-    // Fighter
     damageReduction: (name) => `${name} will take 2 less damage on the next hit!`,
     damageReduced: (name, original, reduced) => `${name} reduces ${original} damage to ${reduced}!`,
 
-    // Berzerker
     rageAttack: (name, dmg) => `${name} gains +1 permanent attack! (now ${dmg} DMG)`,
     rageDamage: (name, hp) => `${name} loses 1 HP from rage! (${hp} HP left)`,
     rageDeath: (name) => `${name} dies from his own rage!`,
 
-    // Assassin
     immunity: (name) => `${name} becomes immune to damage on next turn!`,
     immuneToDamage: (name) => `${name} is immune and takes no damage!`,
     counterDamage: (name, target) => `${name} will take 7 damage later if ${target} survives!`,
@@ -55,4 +53,4 @@ const MESSAGES = {
   }
 };
 
-module.exports = { CHARACTER_STATS, ABILITY_COSTS, MESSAGES };
+export default { CHARACTER_STATS, ABILITY_COSTS, MESSAGES };

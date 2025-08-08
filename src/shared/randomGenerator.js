@@ -1,15 +1,15 @@
-const { CHARACTER_STATS } = require('./gameConfig');
+import { CHARACTER_STATS } from './gameConfig.js';
+import {
+  Fighter,
+  Paladin,
+  Monk,
+  Berzerker,
+  Assassin,
+  Wizard,
+  Valkyrie
+} from './characters/index.js';
 
-const Fighter = require('../characters/fighter');
-const Paladin = require('../characters/paladin');
-const Monk = require('../characters/monk');
-const Berzerker = require('../characters/berzerker');
-const Assassin = require('../characters/assassin');
-const Wizard = require('../characters/wizard');
-const Valkyrie = require('../characters/valkyrie');
-
-// Random name generator for characters
-class RandomGenerator {
+export class RandomGenerator {
   static getRandomNames() {
     const names = [
       'Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry',
@@ -18,7 +18,6 @@ class RandomGenerator {
       'Yara', 'Zoe', 'Aria', 'Blake', 'Cora', 'Dean'
     ];
 
-    // Shuffle and return first 5 unique names
     const shuffled = names.sort(() => 0.5 - Math.random());
     return shuffled.slice(0, 5);
   }
@@ -29,7 +28,6 @@ class RandomGenerator {
   }
 
   static createCharacterByClass(name, className) {
-    // Map class names to constructors
     const classMap = {
       Fighter,
       Paladin,
@@ -73,7 +71,6 @@ class RandomGenerator {
     const classes = Object.keys(CHARACTER_STATS);
     const party = [];
 
-    // Ensure we have one of each class if possible, then random for remaining
     names.forEach((name, index) => {
       const className = index < classes.length ? classes[index] : this.getRandomClass();
       const character = this.createCharacterByClass(name, className);
@@ -87,4 +84,4 @@ class RandomGenerator {
   }
 }
 
-module.exports = RandomGenerator;
+export default RandomGenerator;

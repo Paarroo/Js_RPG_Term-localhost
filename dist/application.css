@@ -8,11 +8,11 @@ body {
   font-family: "Courier New", monospace;
   background: linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2d1b69 50%, #8B0000 75%, #000000 100%);
   color: white;
-  height: 100vh;
-  padding: 0.3rem;
+  min-height: 100vh;
+  padding: 1rem;
   position: relative;
-  overflow: hidden;
-  line-height: 1.4;
+  overflow-x: hidden;
+  line-height: 1.6;
 }
 body::before {
   content: "";
@@ -82,29 +82,30 @@ body::before {
   position: relative;
   overflow: hidden;
   background: linear-gradient(135deg, rgba(139, 0, 0, 0.4) 0%, rgba(45, 27, 105, 0.3) 50%, rgba(0, 0, 0, 0.5) 100%);
-  padding: 2.5rem;
-  margin-bottom: 1.5rem;
+  padding: 3rem;
+  margin-bottom: 3rem;
 }
 .game-setup h2 {
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
   text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700;
 }
 .game-setup p {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
   opacity: 0.9;
   font-size: 1rem;
 }
 
 .character-selection {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.2rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
 }
 
 .character-card {
@@ -270,7 +271,7 @@ body::before {
   position: relative;
   overflow: hidden;
   background: linear-gradient(135deg, rgba(139, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.6) 50%, rgba(45, 27, 105, 0.4) 100%);
-  padding: 2rem;
+  padding: 3rem;
 }
 .game-arena--active {
   display: block;
@@ -290,9 +291,9 @@ body::before {
 
 .players-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 3rem;
 }
 
 .player-card {
@@ -427,14 +428,14 @@ body::before {
 }
 
 .game-log {
-  height: 28vh;
+  height: 200px;
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(45, 27, 105, 0.4));
   border-radius: 12px;
   padding: 1rem;
   overflow-y: auto;
   font-size: 0.9rem;
   line-height: 1.4;
-  margin-top: 0.8rem;
+  margin-top: 1rem;
   border: 2px solid rgba(255, 215, 0, 0.3);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.7);
 }

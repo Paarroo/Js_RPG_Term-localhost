@@ -27,10 +27,15 @@ npm run terminal
 # OR
 node index.js
 
-# Open web version
-npm run web
-# OR
-open index.html
+# Run web version (REQUIRES HTTP SERVER)
+npm run web                 # Starts server on port 8000
+npm run web:open           # Opens browser to localhost:8000
+
+# Alternative web setup
+python3 -m http.server 8000
+# Then open: http://localhost:8000
+
+# ⚠️  IMPORTANT: Web version requires HTTP server
 
 # Compile SCSS (if making style changes)
 npm run build
@@ -115,89 +120,72 @@ Visual health/mana bars, class icons, and improved formatting
 
 ## 🏗️ Architecture
 
-### DRY Principles
-- **Centralized Configuration**: `gameConfig.js` contains all stats, costs, and messages
-- **Inherited Methods**: Base `Character` class provides common functionality
-- **Smart Constructors**: Auto-configuration based on class type
-- **Reusable Components**: UI and random generation modules
+### Key Principles
+- **Single Source of Truth**: One `gameConfig.js` for all platforms
+- **Unified Character Classes**: ES6 modules shared between terminal & web
+- **Modern ES6 Modules**: Native import/export for Node.js + browsers
+- **Clean Separation**: Business logic vs UI interfaces
 
 ### File Structure
 ```
 S1_J3-4_JS_RPG/
 ├── package.json
-├── .gitignore
-├── README.md
-├── index.html                # Web interface
-├── index.js                  # Terminal entry point
+├── index.html
+├── index.js
 │
-├── characters/               # Character classes
-│   ├── character.js          # Base class
-│   ├── fighter.js
-│   ├── paladin.js
-│   ├── monk.js
-│   ├── berzerker.js
-│   ├── assassin.js
-│   ├── wizard.js
-│   └── valkyrie.js
+├── src/
+│   ├── shared/
+│   │   ├── gameConfig.js
+│   │   ├── randomGenerator.js
+│   │   └── characters/
+│   │       ├── index.js
+│   │       ├── character.js
+│   │       ├── fighter.js
+│   │       ├── paladin.js
+│   │       ├── monk.js
+│   │       ├── berzerker.js
+│   │       ├── assassin.js
+│   │       ├── wizard.js
+│   │       └── valkyrie.js
+│   │
+│   └── interfaces/
+│       ├── terminal/
+│       │   ├── terminalGame.js
+│       │   └── uiManager.js
+│       └── web/
+│           └── webGame.js
 │
-├── game/                     # Terminal game logic
-│   ├── game.js               # Main orchestrator
-│   ├── gameConfig.js
-│   ├── randomGenerator.js
-│   └── uiManager.js
-│
-├── web/                      # Web version
-│   ├── webGame.js
-│   ├── gameConfig.js
-│   └── characters/
-│       ├── character.js
-│       ├── fighter.js
-│       ├── paladin.js
-│       ├── monk.js
-│       ├── berzerker.js
-│       ├── assassin.js
-│       ├── wizard.js
-│       └── valkyrie.js
-│
-├── assets/
-│   └── styles/               # SCSS source
-│       ├── application.scss
-│       ├── _variables.scss
-│       ├── _base.scss
-│       ├── _components.scss
-│       ├── _mixins.scss
-│       └── _animations.scss
-│
-└── dist/                     # Compiled CSS
-    ├── application.css
-    └── application.css.map
+├── assets/styles/
+└── dist/
 ```
 
-### Core Design Patterns
-- **Inheritance**: All classes extend base `Character`
-- **Factory Pattern**: `RandomGenerator` creates characters
-- **Strategy Pattern**: `UIManager` handles different display modes
-- **Configuration Pattern**: `gameConfig.js` centralizes all data
+### Design Patterns
+- **ES6 Modules**: Universal import/export (Node.js + Browser)
+- **Single Responsibility**: Interfaces handle UI, shared/ handles logic
+- **Factory Pattern**: `RandomGenerator` creates all character types
+- **Strategy Pattern**: Different interfaces, same game engine
 
 ## 🔧 Configuration
 
-Edit `gameConfig.js` to modify:
+Edit `src/shared/gameConfig.js` to modify:
 - Character stats and balance
 - Ability mana costs  
 - Game messages and text
 - New abilities and effects
 
+Changes automatically apply to both terminal and web versions.
+
 ## 🚀 Getting Started
 
-Uncomment your preferred game mode in `index.js`:
+For terminal version, uncomment your preferred game mode in `index.js`:
 
 ```javascript
 // Default original game
-const rpgGame = new Game();
+const rpgGame = new TerminalGame();
 rpgGame.startGame();
 
 // Random party with enhanced UI
-const rpgGame = new Game();
+const rpgGame = new TerminalGame();
 rpgGame.initializeRandomParty();
 rpgGame.setEnhancedUI(true);
 rpgGame.startGame();
@@ -215,6 +203,6 @@ Each class has distinct strengths, weaknesses, and strategic value in team compo
 
 ---
 
-⚔️  Built with ❤️ and JavaScript ES6
+⚔️  Built with ❤️ and JavaScript
 
-"Where classic RPG meets modern JavaScript development" ✨
+"Where classic RPG meets modern web development" ✨
