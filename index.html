@@ -27,7 +27,6 @@
           <button class="mode-btn active" data-mode="default">Classic Mode</button>
           <button class="mode-btn" data-mode="random">Random Team</button>
           <button class="mode-btn" data-mode="balanced">Balanced Team</button>
-          <button class="mode-btn" data-mode="enhanced">Enhanced Interface</button>
         </div>
 
         <button id="start-game" class="start-btn" disabled>🚀 Start the Fight!</button>
@@ -127,6 +126,17 @@
           Valkyrie: { hp: 12, dmg: 3, mana: 150 },
         };
 
+        // Special attack costs
+        const ABILITY_COSTS = {
+          Fighter: 20,    // Dark Vision
+          Paladin: 40,    // Healing Lightning
+          Monk: 25,       // Heal
+          Berzerker: 0,   // Rage
+          Assassin: 20,   // Shadow Hit
+          Wizard: 25,     // Fireball
+          Valkyrie: 35    // Missile Swarm
+        };
+
         // Names pool
         const NAMES = [
           "Alice",
@@ -170,8 +180,6 @@
               return createRandomParty();
             case "balanced":
               return createBalancedParty();
-            case "enhanced":
-              return createDefaultCharacters(); // Same as default but with enhanced UI
             default:
               return createDefaultCharacters();
           }
@@ -201,14 +209,11 @@
 
         // Create balanced party
         function createBalancedParty() {
-          const shuffledNames = [...NAMES].sort(() => Math.random() - 0.5).slice(0, 7);
+          const shuffledNames = [...NAMES].sort(() => Math.random() - 0.5).slice(0, 5);
           const classes = Object.keys(CHARACTER_STATS);
 
           return shuffledNames.map((name, index) => {
-            const className =
-              index < classes.length
-                ? classes[index]
-                : classes[Math.floor(Math.random() * classes.length)];
+            const className = classes[index % classes.length]; // Cycle through classes
             return createCharacter(name, className);
           });
         }
@@ -319,8 +324,8 @@
             card.className = `player-card ${player.isPlayerControlled ? "controlled" : ""}`;
 
             const hpPercent = (player.hp / player.maxHp) * 100;
-            const manaPercent =
-              player.mana > 0 ? (player.mana / CHARACTER_STATS[player.class].mana) * 100 : 0;
+            const baseMana = CHARACTER_STATS[player.class].mana;
+            const manaPercent = player.mana > 0 ? Math.min((player.mana / baseMana) * 100, 100) : 0;
 
             const playerStatus = player.hp <= 0 ? "defeated" : "playing";
 
@@ -337,9 +342,9 @@
               <div class="hp-stat">HP: ${player.hp}/${player.maxHp}</div>
               <div class="mana-bar">
                 <div class="mana-fill" style="width: ${manaPercent}%"></div>
-                <span class="mana-text">${player.mana}/${CHARACTER_STATS[player.class].mana}</span>
+                <span class="mana-text">${player.mana}/${baseMana}</span>
               </div>
-              <div class="mana-stat">Mana: ${player.mana}/${CHARACTER_STATS[player.class].mana}</div>
+              <div class="mana-stat">Mana: ${player.mana}${player.mana > baseMana ? ' (+' + (player.mana - baseMana) + ')' : ''}/${baseMana}</div>
               <div class="player-stats">
                 <span>DMG: ${player.dmg}</span> | <span>Status: ${playerStatus}</span>
               </div>
@@ -476,6 +481,20 @@
 
             const actionBtns = actionsDiv.querySelectorAll(".action-btn");
             actionBtns.forEach((btn) => {
+              // Check if special attack button and player has enough mana
+              if (btn.dataset.action === "special") {
+                const manaCost = ABILITY_COSTS[player.class];
+                if (player.mana < manaCost) {
+                  btn.disabled = true;
+                  btn.textContent = `✨ Special Attack (${manaCost} mana needed)`;
+                  btn.style.opacity = "0.5";
+                } else {
+                  btn.disabled = false;
+                  btn.textContent = `✨ Special Attack (-${manaCost} mana)`;
+                  btn.style.opacity = "1";
+                }
+              }
+              
               btn.onclick = () => {
                 handlePlayerAction(player, btn.dataset.action, callback);
                 actionsDiv.classList.add("hidden");
@@ -518,13 +537,26 @@
               break;
 
             case "special":
-              damage = Math.floor(player.dmg * 1.5);
-              addLogMessage(
-                `${player.name} uses special attack on ${originalTargetName} for ${damage} damage!`,
-              );
-              target.hp -= damage;
-              if (target.hp < 0) target.hp = 0;
-              if (player.isPlayerControlled) gameStats.damageDealt += damage;
+              const manaCost = ABILITY_COSTS[player.class];
+              if (player.mana >= manaCost) {
+                player.mana -= manaCost;
+                damage = Math.floor(player.dmg * 1.5);
+                addLogMessage(
+                  `${player.name} uses special attack on ${originalTargetName} for ${damage} damage! (-${manaCost} mana)`,
+                );
+                target.hp -= damage;
+                if (target.hp < 0) target.hp = 0;
+                if (player.isPlayerControlled) gameStats.damageDealt += damage;
+              } else {
+                addLogMessage(
+                  `${player.name} doesn't have enough mana for special attack! (needs ${manaCost}, has ${player.mana})`,
+                );
+                damage = player.dmg; // Fallback to normal attack
+                addLogMessage(`${player.name} performs normal attack instead for ${damage} damage!`);
+                target.hp -= damage;
+                if (target.hp < 0) target.hp = 0;
+                if (player.isPlayerControlled) gameStats.damageDealt += damage;
+              }
               break;
 
             case "stats":
@@ -537,6 +569,12 @@
           if (target.hp <= 0) {
             addLogMessage(`${originalTargetName} is defeated!`);
             if (player.isPlayerControlled) gameStats.enemiesDefeated++;
+            
+            // Gain mana for defeating an enemy (only if attacker is alive)
+            if (player.hp > 0) {
+              player.mana += 20;
+              addLogMessage(`${player.name} gains 20 mana for defeating ${originalTargetName}!`);
+            }
           }
 
           updateGameDisplay();
@@ -555,14 +593,32 @@
           const target = targets[Math.floor(Math.random() * targets.length)];
           const targetName = target.isPlayerControlled ? target.name : `🤖 ${target.name}`;
 
-          const damage = player.dmg;
-          addLogMessage(`🤖 ${player.name} (AI) attacks ${targetName} for ${damage} damage!`);
+          // AI chooses between normal and special attack
+          const manaCost = ABILITY_COSTS[player.class];
+          const useSpecialAttack = player.mana >= manaCost && Math.random() > 0.4; // 60% chance if has mana
+          
+          let damage;
+          
+          if (useSpecialAttack) {
+            player.mana -= manaCost;
+            damage = Math.floor(player.dmg * 1.5);
+            addLogMessage(`🤖 ${player.name} (AI) uses special attack on ${targetName} for ${damage} damage! (-${manaCost} mana)`);
+          } else {
+            damage = player.dmg;
+            addLogMessage(`🤖 ${player.name} (AI) attacks ${targetName} for ${damage} damage!`);
+          }
+          
           target.hp -= damage;
           if (target.hp < 0) target.hp = 0;
 
           if (target.hp <= 0) {
-            const targetName = target.isPlayerControlled ? target.name : `🤖 ${target.name}`;
             addLogMessage(`${targetName} is defeated!`);
+            
+            // AI gains mana for defeating an enemy (only if attacker is alive)
+            if (player.hp > 0) {
+              player.mana += 20;
+              addLogMessage(`🤖 ${player.name} gains 20 mana for defeating ${targetName}!`);
+            }
           }
 
           updateGameDisplay();
@@ -742,9 +798,10 @@
             turnsSurvived: 0
           };
           
-          // Reset players HP to full
+          // Reset players HP and mana to full
           players.forEach(player => {
             player.hp = player.maxHp;
+            player.mana = CHARACTER_STATS[player.class].mana;
           });
           
           // Hide modal
