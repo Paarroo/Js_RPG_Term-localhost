@@ -2,7 +2,7 @@ import {
   Fighter,
   Paladin,
   Monk,
-  Berzerker,
+  Berserker,
   Assassin,
   Wizard,
   Valkyrie
@@ -76,7 +76,7 @@ export class WebGame {
                     new Fighter("Grace"),
                     new Paladin("Ulder"),
                     new Monk("Moana"),
-                    new Berzerker("Draven"),
+                    new Berserker("Draven"),
                     new Assassin("Carl")
                 ];
         }

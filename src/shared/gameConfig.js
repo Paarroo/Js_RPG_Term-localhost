@@ -3,7 +3,7 @@ export const CHARACTER_STATS = {
   Fighter: { hp: 14, dmg: 4, mana: 45 },
   Paladin: { hp: 16, dmg: 3, mana: 160 },
   Monk: { hp: 10, dmg: 2, mana: 200 },
-  Berzerker: { hp: 10, dmg: 4, mana: 0 },
+  Berserker: { hp: 10, dmg: 4, mana: 0 },
   Assassin: { hp: 8, dmg: 6, mana: 30 },
   Wizard: { hp: 10, dmg: 2, mana: 200 },
   Valkyrie: { hp: 12, dmg: 3, mana: 150 }
@@ -26,7 +26,7 @@ export const MESSAGES = {
   ATTACKS: {
     using: (name, ability, target) => `${name} uses ${ability} on ${target}!`,
     usingNoTarget: (name, ability) => `${name} uses ${ability}!`,
-    attacking: (attacker, target, damage) => `${attacker} is attacking ${target}. He deals him ${damage} damages.`,
+    attacking: (attacker, target, damage) => `${attacker} is attacking ${target} and deals ${damage} damage.`,
     hpLeft: (target, hp) => `${target} got ${hp} lifepoints left.`,
     fireball: (name, target) => `${name} casts Fireball on ${target}!`,
     missileSwarm: (name, target) => `${name} launches missile swarm at ${target}!`

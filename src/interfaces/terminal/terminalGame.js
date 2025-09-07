@@ -2,7 +2,7 @@ import {
   Fighter,
   Paladin,
   Monk,
-  Berzerker,
+  Berserker,
   Assassin,
   Wizard,
   Valkyrie
@@ -23,7 +23,7 @@ export class TerminalGame {
     this.grace = new Fighter("Grace");
     this.ulder = new Paladin("Ulder");
     this.moana = new Monk("Moana");
-    this.draven = new Berzerker("Draven");
+    this.draven = new Berserker("Draven");
     this.carl = new Assassin("Carl");
 
     this.players = [this.grace, this.ulder, this.moana, this.draven, this.carl];

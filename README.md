@@ -5,7 +5,7 @@ A turn-based RPG game featuring 7 unique character classes battling to the death
 ## 🚀 Features
 
 - **Dual Platform**: Terminal console and web browser versions
-- **7 Character Classes**: Fighter, Paladin, Monk, Berzerker, Assassin, Wizard, Valkyrie
+- **7 Character Classes**: Fighter, Paladin, Monk, Berserker, Assassin, Wizard, Valkyrie
 - **Multiple Game Modes**: Classic, Random Team, Balanced Team, Enhanced Interface
 - **Enhanced UI**: Visual health/mana bars with class icons (web version)
 - **Strategic Combat**: Each class has unique abilities and playstyles
@@ -17,7 +17,7 @@ A turn-based RPG game featuring 7 unique character classes battling to the death
 
 ```bash
 # Clone or download the project
-cd S1_J3-4_JS_RPG
+cd Js_RPG_Term-localhost
 
 # Install dependencies (optional - for SCSS compilation)
 npm install
@@ -96,7 +96,7 @@ _Turn-based combat with detailed statistics and AI decision making_
 - **Special**: Heal (restore 8 HP)
 - **Role**: Support healer with longevity
 
-### 🪓 Berzerker
+### 🪓 Berserker
 
 - **HP**: 10 | **DMG**: 4 | **Mana**: 0
 - **Special**: Rage (+1 permanent DMG, -1 HP)
@@ -124,7 +124,7 @@ _Turn-based combat with detailed statistics and AI decision making_
 
 ### Default Mode
 
-Original 5 characters: Grace (Fighter), Ulder (Paladin), Moana (Monk), Draven (Berzerker), Carl (Assassin)
+Original 5 characters: Grace (Fighter), Ulder (Paladin), Moana (Monk), Draven (Berserker), Carl (Assassin)
 
 ### Random Party Mode
 
@@ -160,7 +160,7 @@ Visual health/mana bars, class icons, and improved formatting
 ### File Structure
 
 ```
-S1_J3-4_JS_RPG/
+Js_RPG_Term-localhost/
 ├── package.json
 ├── index.html
 ├── index.js
@@ -175,7 +175,7 @@ S1_J3-4_JS_RPG/
 │   │       ├── fighter.js
 │   │       ├── paladin.js
 │   │       ├── monk.js
-│   │       ├── berzerker.js
+│   │       ├── berserker.js
 │   │       ├── assassin.js
 │   │       ├── wizard.js
 │   │       └── valkyrie.js

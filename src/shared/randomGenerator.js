@@ -3,7 +3,7 @@ import {
   Fighter,
   Paladin,
   Monk,
-  Berzerker,
+  Berserker,
   Assassin,
   Wizard,
   Valkyrie
@@ -81,7 +81,7 @@ export class RandomGenerator {
       Fighter,
       Paladin,
       Monk,
-      Berzerker,
+      Berserker,
       Assassin,
       Wizard,
       Valkyrie

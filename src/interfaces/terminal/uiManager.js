@@ -15,7 +15,7 @@ export class UIManager {
     const { mana } = character;
     const maxMana = character.maxMana || 200; // Fallback for classes without maxMana
     
-    // Handle Berzerker (0 max mana)
+    // Handle Berserker (0 max mana)
     if (maxMana === 0) {
       return '░'.repeat(10) + ' (0/0)';
     }
@@ -35,7 +35,7 @@ export class UIManager {
       Fighter: '⚔️',
       Paladin: '🛡️',
       Monk: '☯️',
-      Berzerker: '🪓',
+      Berserker: '🪓',
       Assassin: '🗡️',
       Wizard: '🔮',
       Valkyrie: '🚁'
